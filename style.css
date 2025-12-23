@@ -105,7 +105,7 @@ color: rgb(255, 255, 255);
     color: white;
 }
 
-/* Dislplay Image */
+/* Display Image */
 #aboutimage {
     background-color: rgb(255, 255, 255);
     border-radius: 5px;
@@ -132,7 +132,7 @@ color: rgb(255, 255, 255);
   letter-spacing: 1px;
   word-spacing: 2px;
   font-style: italic;
-  text-transform: calc(100% + 1.5vw);
+  text-transform: none;
   color: white;
   text-align: center;
 
