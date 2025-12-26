@@ -187,6 +187,13 @@ function generateFilterHtml(types, topics) {
             <input type="text" id="gallery-search" placeholder="Search..." aria-label="Search gallery" />
           </div>
           <div class="filter-section">
+            <h3>Original Content</h3>
+            <label class="filter-toggle" aria-label="Original content only">
+              <input type="checkbox" id="oc-toggle" />
+              <span>OC Only</span>
+            </label>
+          </div>
+          <div class="filter-section">
             <h3>Type</h3>
             <div class="filter-buttons">
               <button class="filter-btn active" data-filter-type="all" data-filter-group="type">All</button>\n`;
@@ -207,13 +214,6 @@ function generateFilterHtml(types, topics) {
   });
 
   html += `            </div>
-          </div>
-          <div class="filter-section">
-            <h3>Original Content</h3>
-            <label class="filter-toggle" aria-label="Original content only">
-              <input type="checkbox" id="oc-toggle" />
-              <span>OC Only</span>
-            </label>
           </div>
         </div>\n`;
 
