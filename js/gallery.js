@@ -19,10 +19,12 @@ function initializeGallery(gallerySelector, config) {
     if (!lightbox) return;
 
     // Get image sources from existing tiles
-    const imageSources = tiles.map(tile => {
-      const img = tile.querySelector("img");
-      return img ? img.src : '';
-    }).filter(src => src);
+    const imageSources = tiles
+      .map((tile) => {
+        const img = tile.querySelector("img");
+        return img ? img.src : "";
+      })
+      .filter((src) => src);
 
     attachLightboxHandlers(gallery, tiles, lightbox, imageSources);
     return;
@@ -30,9 +32,9 @@ function initializeGallery(gallerySelector, config) {
 
   // If no tiles exist, create them from config (fallback for non-build galleries)
   gallery.innerHTML = "";
-  
+
   let imageSources = [];
-  
+
   if (config.images) {
     // Explicit list of images
     imageSources = config.images;
@@ -40,15 +42,19 @@ function initializeGallery(gallerySelector, config) {
     // Sequential pattern like '001', '002', etc.
     imageSources = Array.from(
       { length: config.count },
-      (_, i) => `${config.directory}/${config.pattern.replace('{n}', String(i + 1).padStart(3, '0'))}`
+      (_, i) =>
+        `${config.directory}/${config.pattern.replace(
+          "{n}",
+          String(i + 1).padStart(3, "0")
+        )}`
     );
   } else if (config.directory && config.files) {
     // Explicit list of filenames
-    imageSources = config.files.map(file => `${config.directory}/${file}`);
+    imageSources = config.files.map((file) => `${config.directory}/${file}`);
   }
 
   const isPortrait = gallery.classList.contains("portrait-gallery");
-  
+
   imageSources.forEach((src, idx) => {
     const btn = document.createElement("button");
     btn.className = isPortrait ? "portrait-tile" : "square-tile";
@@ -83,7 +89,7 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
     const slides = {
       "prev-2": (currentIndex - 2 + total) % total,
       "prev-1": (currentIndex - 1 + total) % total,
-      "center": currentIndex,
+      center: currentIndex,
       "next-1": (currentIndex + 1) % total,
       "next-2": (currentIndex + 2) % total,
     };
@@ -151,6 +157,43 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
     if (event.key === "ArrowRight") showNext(1);
     if (event.key === "ArrowLeft") showNext(-1);
   });
+
+  // Touch swipe support for mobile/tablet
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const minSwipeDistance = 50; // minimum distance for a swipe
+
+  lightbox.addEventListener(
+    "touchstart",
+    (event) => {
+      if (lightbox.dataset.active !== "true") return;
+      touchStartX = event.changedTouches[0].screenX;
+    },
+    { passive: true }
+  );
+
+  lightbox.addEventListener(
+    "touchend",
+    (event) => {
+      if (lightbox.dataset.active !== "true") return;
+      touchEndX = event.changedTouches[0].screenX;
+      handleSwipe();
+    },
+    { passive: true }
+  );
+
+  function handleSwipe() {
+    const distance = touchEndX - touchStartX;
+    if (Math.abs(distance) < minSwipeDistance) return;
+
+    if (distance > 0) {
+      // Swipe right - show previous
+      showNext(-1);
+    } else {
+      // Swipe left - show next
+      showNext(1);
+    }
+  }
 }
 
 /**
@@ -158,59 +201,95 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
  * Attaches filter button event listeners
  */
 function initializeGalleryFilters() {
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+  const filterBtns = document.querySelectorAll(".filter-btn");
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
       const group = btn.dataset.filterGroup;
-      
+
       // Toggle active state
-      document.querySelectorAll(`.filter-btn[data-filter-group="${group}"]`)
-        .forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
+      document
+        .querySelectorAll(`.filter-btn[data-filter-group="${group}"]`)
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+
       // Apply filters
       applyGalleryFilters();
     });
   });
+
+  // OC toggle
+  const ocToggle = document.querySelector("#oc-toggle");
+  if (ocToggle) {
+    ocToggle.addEventListener("change", () => {
+      applyGalleryFilters();
+    });
+  }
+
+  // Search input
+  const searchInput = document.querySelector("#gallery-search");
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      applyGalleryFilters();
+    });
+  }
 }
 
 /**
  * Apply gallery filters based on selected filter buttons
  */
 function applyGalleryFilters() {
-  const activeTypeBtn = document.querySelector('.filter-btn[data-filter-group="type"].active');
-  const activeTopicBtn = document.querySelector('.filter-btn[data-filter-group="topic"].active');
-  
-  let selectedType = (activeTypeBtn?.dataset.filterType || 'all').toLowerCase();
-  let selectedTopic = (activeTopicBtn?.dataset.filterTopic || 'all').toLowerCase();
-  
+  const activeTypeBtn = document.querySelector(
+    '.filter-btn[data-filter-group="type"].active'
+  );
+  const activeTopicBtn = document.querySelector(
+    '.filter-btn[data-filter-group="topic"].active'
+  );
+
+  let selectedType = (activeTypeBtn?.dataset.filterType || "all").toLowerCase();
+  let selectedTopic = (
+    activeTopicBtn?.dataset.filterTopic || "all"
+  ).toLowerCase();
+
   // Normalize: convert spaces to hyphens for topic matching
-  if (selectedTopic !== 'all') {
-    selectedTopic = selectedTopic.replace(/\s+/g, '-');
+  if (selectedTopic !== "all") {
+    selectedTopic = selectedTopic.replace(/\s+/g, "-");
   }
-  
+
+  // Get search query
+  const searchInput = document.querySelector("#gallery-search");
+  const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
   // Select both portrait and square tiles
-  const tiles = document.querySelectorAll('.portrait-gallery [data-type], .square-gallery [data-type]');
-  
-  tiles.forEach(tile => {
-    const type = tile.dataset.type?.toLowerCase() || '';
-    const topic = tile.dataset.topic?.toLowerCase() || '';
-    
-    const typeMatch = selectedType === 'all' || type === selectedType;
-    const topicMatch = selectedTopic === 'all' || topic === selectedTopic;
-    
-    if (typeMatch && topicMatch) {
-      tile.style.display = '';
+  const tiles = document.querySelectorAll(
+    ".portrait-gallery [data-type], .square-gallery [data-type]"
+  );
+
+  tiles.forEach((tile) => {
+    const type = tile.dataset.type?.toLowerCase() || "";
+    const topic = tile.dataset.topic?.toLowerCase() || "";
+    const isOc = tile.dataset.oc === "true";
+    const searchTerms = tile.dataset.searchTerms?.toLowerCase() || "";
+
+    const ocToggle = document.querySelector("#oc-toggle");
+    const ocOnly = ocToggle ? ocToggle.checked : false;
+
+    const typeMatch = selectedType === "all" || type === selectedType;
+    const topicMatch = selectedTopic === "all" || topic === selectedTopic;
+    const ocMatch = !ocOnly || isOc;
+    const searchMatch = !searchQuery || searchTerms.includes(searchQuery);
+
+    if (typeMatch && topicMatch && ocMatch && searchMatch) {
+      tile.style.display = "";
     } else {
-      tile.style.display = 'none';
+      tile.style.display = "none";
     }
   });
 }
 
 // Auto-initialize filters when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeGalleryFilters);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeGalleryFilters);
 } else {
   initializeGalleryFilters();
 }
