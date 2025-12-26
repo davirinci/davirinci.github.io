@@ -160,9 +160,66 @@ main.container {
   line-height: 1.2;
 }
 
+/* Gallery filters */
+.gallery-filters {
+  padding: 24px 5vw;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filter-section {
+  margin-bottom: 24px;
+}
+
+.filter-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #333;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-btn {
+  background: #e8e8e8;
+  border: 2px solid #e8e8e8;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 150ms ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-btn:hover {
+  background: #d0d0d0;
+  border-color: #d0d0d0;
+}
+
+.filter-btn.active {
+  background: #333;
+  border-color: #333;
+  color: white;
+}
+
+.filter-btn.active::before {
+  content: "✓";
+  display: inline;
+}
+
 .square-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
   padding: 24px 5vw;
   width: 100%;
@@ -200,7 +257,7 @@ main.container {
 /* Portrait gallery for tall images (height 3x width) */
 .portrait-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 16px;
   padding: 24px 5vw;
   width: 100%;

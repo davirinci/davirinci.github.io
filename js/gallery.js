@@ -10,6 +10,25 @@ function initializeGallery(gallerySelector, config) {
   const gallery = document.querySelector(gallerySelector);
   if (!gallery) return;
 
+  // Check if tiles are already rendered in HTML (from build.js)
+  const existingTiles = gallery.querySelectorAll("button[data-index]");
+  if (existingTiles.length > 0) {
+    // Tiles already exist - just set up lightbox functionality
+    const tiles = Array.from(existingTiles);
+    const lightbox = document.querySelector(".lightbox");
+    if (!lightbox) return;
+
+    // Get image sources from existing tiles
+    const imageSources = tiles.map(tile => {
+      const img = tile.querySelector("img");
+      return img ? img.src : '';
+    }).filter(src => src);
+
+    attachLightboxHandlers(gallery, tiles, lightbox, imageSources);
+    return;
+  }
+
+  // If no tiles exist, create them from config (fallback for non-build galleries)
   gallery.innerHTML = "";
   
   let imageSources = [];
@@ -41,11 +60,17 @@ function initializeGallery(gallerySelector, config) {
     gallery.appendChild(btn);
   });
 
-  // Rest of the gallery initialization code...
   const tiles = Array.from(gallery.querySelectorAll("button[data-index]"));
   const lightbox = document.querySelector(".lightbox");
   if (!lightbox) return;
 
+  attachLightboxHandlers(gallery, tiles, lightbox, imageSources);
+}
+
+/**
+ * Attach lightbox event handlers to tiles
+ */
+function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
   const carousel = lightbox.querySelector(".lightbox__carousel");
   const closeBtn = lightbox.querySelector(".lightbox__close");
   const prevBtn = lightbox.querySelector(".lightbox__prev");
@@ -126,4 +151,66 @@ function initializeGallery(gallerySelector, config) {
     if (event.key === "ArrowRight") showNext(1);
     if (event.key === "ArrowLeft") showNext(-1);
   });
+}
+
+/**
+ * Initialize gallery filters
+ * Attaches filter button event listeners
+ */
+function initializeGalleryFilters() {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.dataset.filterGroup;
+      
+      // Toggle active state
+      document.querySelectorAll(`.filter-btn[data-filter-group="${group}"]`)
+        .forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Apply filters
+      applyGalleryFilters();
+    });
+  });
+}
+
+/**
+ * Apply gallery filters based on selected filter buttons
+ */
+function applyGalleryFilters() {
+  const activeTypeBtn = document.querySelector('.filter-btn[data-filter-group="type"].active');
+  const activeTopicBtn = document.querySelector('.filter-btn[data-filter-group="topic"].active');
+  
+  let selectedType = (activeTypeBtn?.dataset.filterType || 'all').toLowerCase();
+  let selectedTopic = (activeTopicBtn?.dataset.filterTopic || 'all').toLowerCase();
+  
+  // Normalize: convert spaces to hyphens for topic matching
+  if (selectedTopic !== 'all') {
+    selectedTopic = selectedTopic.replace(/\s+/g, '-');
+  }
+  
+  // Select both portrait and square tiles
+  const tiles = document.querySelectorAll('.portrait-gallery [data-type], .square-gallery [data-type]');
+  
+  tiles.forEach(tile => {
+    const type = tile.dataset.type?.toLowerCase() || '';
+    const topic = tile.dataset.topic?.toLowerCase() || '';
+    
+    const typeMatch = selectedType === 'all' || type === selectedType;
+    const topicMatch = selectedTopic === 'all' || topic === selectedTopic;
+    
+    if (typeMatch && topicMatch) {
+      tile.style.display = '';
+    } else {
+      tile.style.display = 'none';
+    }
+  });
+}
+
+// Auto-initialize filters when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeGalleryFilters);
+} else {
+  initializeGalleryFilters();
 }

@@ -27,6 +27,33 @@
 
     <main class="container">
       <h1>Postcards & Posters</h1>
+      <div class="gallery-filters">
+        <div class="filter-section">
+          <h3>Type</h3>
+          <div class="filter-buttons">
+            <button
+              class="filter-btn active"
+              data-filter-type="all"
+              data-filter-group="type"
+            >
+              All
+            </button>
+          </div>
+        </div>
+        <div class="filter-section">
+          <h3>Topic</h3>
+          <div class="filter-buttons">
+            <button
+              class="filter-btn active"
+              data-filter-topic="all"
+              data-filter-group="topic"
+            >
+              All
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="portrait-gallery" aria-label="Print thumbnails"></div>
     </main>
 
@@ -68,11 +95,11 @@
     <script src="../js/disable-contextmenu.js"></script>
     <script src="../js/gallery.js"></script>
     <script>
-      (() => {
+      (function () {
         const config = {
-          directory: "./images/posters",
-          pattern: "{n}.webp",
-          count: 50,
+          images: [],
+          types: [],
+          topics: [],
         };
         initializeGallery(".portrait-gallery", config);
       })();

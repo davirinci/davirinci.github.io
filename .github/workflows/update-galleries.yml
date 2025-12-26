@@ -3,9 +3,8 @@ name: Update Galleries
 on:
   push:
     branches: [main]
-    paths:
-      - "shop/images/**"
   workflow_dispatch:
+  page_build:
 
 jobs:
   update-galleries:

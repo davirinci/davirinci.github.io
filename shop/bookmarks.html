@@ -28,7 +28,74 @@
     <div class="container gallery-container">
       <section id="main">
         <h1>Bookmarks</h1>
-        <div class="portrait-gallery" aria-label="Bookmark thumbnails"></div>
+        <div class="gallery-filters">
+          <div class="filter-section">
+            <h3>Type</h3>
+            <div class="filter-buttons">
+              <button class="filter-btn active" data-filter-type="all" data-filter-group="type">All</button>
+              <button class="filter-btn" data-filter-type="albums" data-filter-group="type">Albums</button>
+            </div>
+          </div>
+          <div class="filter-section">
+            <h3>Topic</h3>
+            <div class="filter-buttons">
+              <button class="filter-btn active" data-filter-topic="all" data-filter-group="topic">All</button>
+              <button class="filter-btn" data-filter-topic="kendrick" data-filter-group="topic">Kendrick</button>
+              <button class="filter-btn" data-filter-topic="led" data-filter-group="topic">Led</button>
+              <button class="filter-btn" data-filter-topic="nirvana" data-filter-group="topic">Nirvana</button>
+              <button class="filter-btn" data-filter-topic="pink" data-filter-group="topic">Pink</button>
+              <button class="filter-btn" data-filter-topic="queen" data-filter-group="topic">Queen</button>
+              <button class="filter-btn" data-filter-topic="the beatles" data-filter-group="topic">The Beatles</button>
+              <button class="filter-btn" data-filter-topic="the local" data-filter-group="topic">The Local</button>
+              <button class="filter-btn" data-filter-topic="the weeknd" data-filter-group="topic">The Weeknd</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="portrait-gallery" aria-label="Bookmark thumbnails">
+        <button class="portrait-tile" data-index="0" data-type="albums" data-topic="kendrick">
+        <img src="./images/bookmarks/albums-kendrick-lamar-gnx.webp" alt="Kendrick">
+      </button>
+        <button class="portrait-tile" data-index="1" data-type="albums" data-topic="led">
+        <img src="./images/bookmarks/albums-led-zeppelin-mothership.webp" alt="Led">
+      </button>
+        <button class="portrait-tile" data-index="2" data-type="albums" data-topic="nirvana">
+        <img src="./images/bookmarks/albums-nirvana-in-utero.webp" alt="Nirvana">
+      </button>
+        <button class="portrait-tile" data-index="3" data-type="albums" data-topic="nirvana">
+        <img src="./images/bookmarks/albums-nirvana-nevermind.webp" alt="Nirvana">
+      </button>
+        <button class="portrait-tile" data-index="4" data-type="albums" data-topic="pink">
+        <img src="./images/bookmarks/albums-pink-floyd-dark-side-of-the-moon.webp" alt="Pink">
+      </button>
+        <button class="portrait-tile" data-index="5" data-type="albums" data-topic="pink">
+        <img src="./images/bookmarks/albums-pink-floyd-wish-you-were-here.webp" alt="Pink">
+      </button>
+        <button class="portrait-tile" data-index="6" data-type="albums" data-topic="queen">
+        <img src="./images/bookmarks/albums-queen-hot-space.webp" alt="Queen">
+      </button>
+        <button class="portrait-tile" data-index="7" data-type="albums" data-topic="queen">
+        <img src="./images/bookmarks/albums-queen-sheer-heart-attack.webp" alt="Queen">
+      </button>
+        <button class="portrait-tile" data-index="8" data-type="albums" data-topic="queen">
+        <img src="./images/bookmarks/albums-queen-the-works.webp" alt="Queen">
+      </button>
+        <button class="portrait-tile" data-index="9" data-type="albums" data-topic="the-beatles">
+        <img src="./images/bookmarks/albums-the-beatles-a-hard-days-night.webp" alt="The Beatles">
+      </button>
+        <button class="portrait-tile" data-index="10" data-type="albums" data-topic="the-beatles">
+        <img src="./images/bookmarks/albums-the-beatles-let-it-be.webp" alt="The Beatles">
+      </button>
+        <button class="portrait-tile" data-index="11" data-type="albums" data-topic="the-beatles">
+        <img src="./images/bookmarks/albums-the-beatles-yellow-submarine.webp" alt="The Beatles">
+      </button>
+        <button class="portrait-tile" data-index="12" data-type="albums" data-topic="the-local">
+        <img src="./images/bookmarks/albums-the-local-train-aalas-ka-pedh.webp" alt="The Local">
+      </button>
+        <button class="portrait-tile" data-index="13" data-type="albums" data-topic="the-weeknd">
+        <img src="./images/bookmarks/albums-the-weeknd-starboy.webp" alt="The Weeknd">
+      </button>
+        </div>
       </section>
     </div>
 
@@ -70,28 +137,14 @@
     <script src="../js/disable-contextmenu.js"></script>
     <script src="../js/gallery.js"></script>
     <script>
-      (() => {
-        const config = {
-          directory: "./images/bookmarks",
-          files: [
-            "albums-kendrick-lamar-gnx.webp",
-            "albums-led-zeppelin-mothership.webp",
-            "albums-nirvana-in-utero.webp",
-            "albums-nirvana-nevermind.webp",
-            "albums-pink-floyd-dark-side-of-the-moon.webp",
-            "albums-pink-floyd-wish-you-were-here.webp",
-            "albums-queen-hot-space.webp",
-            "albums-queen-sheer-heart-attack.webp",
-            "albums-queen-the-works.webp",
-            "albums-the-beatles-a-hard-days-night.webp",
-            "albums-the-beatles-let-it-be.webp",
-            "albums-the-beatles-yellow-submarine.webp",
-            "albums-the-local-train-aalas-ka-pedh.webp",
-            "albums-the-weeknd-starboy.webp",
-          ],
-        };
-        initializeGallery(".portrait-gallery", config);
-      })();
+      (function() {
+          const config = {
+            images: ["./images/bookmarks/albums-kendrick-lamar-gnx.webp","./images/bookmarks/albums-led-zeppelin-mothership.webp","./images/bookmarks/albums-nirvana-in-utero.webp","./images/bookmarks/albums-nirvana-nevermind.webp","./images/bookmarks/albums-pink-floyd-dark-side-of-the-moon.webp","./images/bookmarks/albums-pink-floyd-wish-you-were-here.webp","./images/bookmarks/albums-queen-hot-space.webp","./images/bookmarks/albums-queen-sheer-heart-attack.webp","./images/bookmarks/albums-queen-the-works.webp","./images/bookmarks/albums-the-beatles-a-hard-days-night.webp","./images/bookmarks/albums-the-beatles-let-it-be.webp","./images/bookmarks/albums-the-beatles-yellow-submarine.webp","./images/bookmarks/albums-the-local-train-aalas-ka-pedh.webp","./images/bookmarks/albums-the-weeknd-starboy.webp"],
+            types: ["Albums"],
+            topics: ["Kendrick","Led","Nirvana","Pink","Queen","The Beatles","The Local","The Weeknd"]
+          };
+          initializeGallery(".portrait-gallery", config);
+        })();
     </script>
   </body>
 </html>
