@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stickers – Various Thingamjigs</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body>
+    <header id="mainHeader">
+      <div class="container">
+        <h1>Various Thingamjigs</h1>
+      </div>
+    </header>
+
+    <nav id="mainNav">
+      <div class="container">
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../shop.html">Shop</a></li>
+          <li><a href="../works.html">Works</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../contact.html">Contact Me</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container gallery-container">
+      <section id="main">
+        <h1>Sticker Gallery</h1>
+        <div class="square-gallery" aria-label="Sticker thumbnails"></div>
+      </section>
+    </div>
+
+    <div
+      class="lightbox"
+      data-active="false"
+      aria-hidden="true"
+      role="dialog"
+      aria-label="Image viewer"
+    >
+      <button class="lightbox__close" aria-label="Close viewer">×</button>
+      <button class="lightbox__nav lightbox__prev" aria-label="Previous image">
+        ‹
+      </button>
+      <button class="lightbox__nav lightbox__next" aria-label="Next image">
+        ›
+      </button>
+      <div class="lightbox__stage">
+        <img src="" alt="Expanded sticker" class="lightbox__image" />
+      </div>
+    </div>
+
+    <script src="../js/disable-contextmenu.js"></script>
+    <script>
+      (() => {
+        const gallery = document.querySelector(".square-gallery");
+        const totalImages = 90;
+        gallery.innerHTML = "";
+        const imageSources = Array.from(
+          { length: totalImages },
+          (_, i) => `./images/stickers/${String(i + 1).padStart(3, "0")}.webp`
+        );
+
+        imageSources.forEach((src, idx) => {
+          const btn = document.createElement("button");
+          btn.className = "square-tile";
+          btn.dataset.index = String(idx);
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = `Sticker ${String(idx + 1).padStart(3, "0")}`;
+          btn.appendChild(img);
+          gallery.appendChild(btn);
+        });
+
+        const tiles = Array.from(document.querySelectorAll(".square-tile"));
+        const lightbox = document.querySelector(".lightbox");
+        const lightboxImage = lightbox.querySelector(".lightbox__image");
+        const closeBtn = lightbox.querySelector(".lightbox__close");
+        const prevBtn = lightbox.querySelector(".lightbox__prev");
+        const nextBtn = lightbox.querySelector(".lightbox__next");
+
+        let currentIndex = 0;
+
+        function openLightbox(index) {
+          currentIndex = index;
+          lightboxImage.src = imageSources[currentIndex];
+          lightbox.dataset.active = "true";
+          lightbox.setAttribute("aria-hidden", "false");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeLightbox() {
+          lightbox.dataset.active = "false";
+          lightbox.setAttribute("aria-hidden", "true");
+          document.body.style.overflow = "";
+        }
+
+        function showNext(delta) {
+          const total = imageSources.length;
+          currentIndex = (currentIndex + delta + total) % total;
+          lightboxImage.src = imageSources[currentIndex];
+        }
+
+        tiles.forEach((tile) => {
+          tile.addEventListener("click", () => {
+            const index = Number(tile.dataset.index);
+            openLightbox(index);
+          });
+        });
+
+        closeBtn.addEventListener("click", closeLightbox);
+        lightbox.addEventListener("click", closeLightbox);
+
+        prevBtn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          showNext(-1);
+        });
+
+        nextBtn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          showNext(1);
+        });
+
+        lightbox
+          .querySelector(".lightbox__stage")
+          .addEventListener("click", (event) => {
+            event.stopPropagation();
+          });
+
+        document.addEventListener("keydown", (event) => {
+          if (lightbox.dataset.active !== "true") return;
+          if (event.key === "Escape") closeLightbox();
+          if (event.key === "ArrowRight") showNext(1);
+          if (event.key === "ArrowLeft") showNext(-1);
+        });
+      })();
+    </script>
+  </body>
+</html>
