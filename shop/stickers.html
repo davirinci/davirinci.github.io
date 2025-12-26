@@ -47,93 +47,36 @@
         ›
       </button>
       <div class="lightbox__stage">
-        <img src="" alt="Expanded sticker" class="lightbox__image" />
+        <div class="lightbox__carousel">
+          <div class="lightbox__slide lightbox__slide--prev-2">
+            <img src="" alt="" class="lightbox__carousel-image" />
+          </div>
+          <div class="lightbox__slide lightbox__slide--prev-1">
+            <img src="" alt="" class="lightbox__carousel-image" />
+          </div>
+          <div class="lightbox__slide lightbox__slide--center">
+            <img src="" alt="Current image" class="lightbox__image" />
+          </div>
+          <div class="lightbox__slide lightbox__slide--next-1">
+            <img src="" alt="" class="lightbox__carousel-image" />
+          </div>
+          <div class="lightbox__slide lightbox__slide--next-2">
+            <img src="" alt="" class="lightbox__carousel-image" />
+          </div>
+        </div>
       </div>
     </div>
 
     <script src="../js/disable-contextmenu.js"></script>
+    <script src="../js/gallery.js"></script>
     <script>
       (() => {
-        const gallery = document.querySelector(".square-gallery");
-        const totalImages = 90;
-        gallery.innerHTML = "";
-        const imageSources = Array.from(
-          { length: totalImages },
-          (_, i) => `./images/stickers/${String(i + 1).padStart(3, "0")}.webp`
-        );
-
-        imageSources.forEach((src, idx) => {
-          const btn = document.createElement("button");
-          btn.className = "square-tile";
-          btn.dataset.index = String(idx);
-          const img = document.createElement("img");
-          img.src = src;
-          img.alt = `Sticker ${String(idx + 1).padStart(3, "0")}`;
-          btn.appendChild(img);
-          gallery.appendChild(btn);
-        });
-
-        const tiles = Array.from(document.querySelectorAll(".square-tile"));
-        const lightbox = document.querySelector(".lightbox");
-        const lightboxImage = lightbox.querySelector(".lightbox__image");
-        const closeBtn = lightbox.querySelector(".lightbox__close");
-        const prevBtn = lightbox.querySelector(".lightbox__prev");
-        const nextBtn = lightbox.querySelector(".lightbox__next");
-
-        let currentIndex = 0;
-
-        function openLightbox(index) {
-          currentIndex = index;
-          lightboxImage.src = imageSources[currentIndex];
-          lightbox.dataset.active = "true";
-          lightbox.setAttribute("aria-hidden", "false");
-          document.body.style.overflow = "hidden";
-        }
-
-        function closeLightbox() {
-          lightbox.dataset.active = "false";
-          lightbox.setAttribute("aria-hidden", "true");
-          document.body.style.overflow = "";
-        }
-
-        function showNext(delta) {
-          const total = imageSources.length;
-          currentIndex = (currentIndex + delta + total) % total;
-          lightboxImage.src = imageSources[currentIndex];
-        }
-
-        tiles.forEach((tile) => {
-          tile.addEventListener("click", () => {
-            const index = Number(tile.dataset.index);
-            openLightbox(index);
-          });
-        });
-
-        closeBtn.addEventListener("click", closeLightbox);
-        lightbox.addEventListener("click", closeLightbox);
-
-        prevBtn.addEventListener("click", (event) => {
-          event.stopPropagation();
-          showNext(-1);
-        });
-
-        nextBtn.addEventListener("click", (event) => {
-          event.stopPropagation();
-          showNext(1);
-        });
-
-        lightbox
-          .querySelector(".lightbox__stage")
-          .addEventListener("click", (event) => {
-            event.stopPropagation();
-          });
-
-        document.addEventListener("keydown", (event) => {
-          if (lightbox.dataset.active !== "true") return;
-          if (event.key === "Escape") closeLightbox();
-          if (event.key === "ArrowRight") showNext(1);
-          if (event.key === "ArrowLeft") showNext(-1);
-        });
+        const config = {
+          directory: "./images/stickers",
+          pattern: "{n}.webp",
+          count: 90,
+        };
+        initializeGallery(".square-gallery", config);
       })();
     </script>
   </body>

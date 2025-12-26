@@ -27,21 +27,38 @@
 
     <main class="container" aria-label="Shop categories">
       <h1>Shop Categories</h1>
-      <section class="shop-tiles" aria-label="Browse shop sections">
-        <a class="shop-tile" href="shop/stickers.html">
-          <span class="shop-tile__label">Stickers</span>
-        </a>
-        <a class="shop-tile" href="shop/posters.html">
-          <span class="shop-tile__label">Posters</span>
-        </a>
-        <a class="shop-tile" href="shop/postcards.htm">
-          <span class="shop-tile__label">Postcards</span>
-        </a>
-        <a class="shop-tile" href="shop/bookmarks.html">
-          <span class="shop-tile__label">Bookmarks</span>
-        </a>
+      <section
+        class="shop-tiles"
+        aria-label="Browse shop sections"
+        id="shop-tiles"
+      >
+        <!-- Categories will be dynamically generated -->
       </section>
     </main>
     <script src="js/disable-contextmenu.js"></script>
+    <script>
+      // Dynamically generate shop categories based on image directories
+      (() => {
+        const shopTilesContainer = document.getElementById("shop-tiles");
+        const categories = [
+          { name: "Stickers", path: "stickers" },
+          { name: "Bookmarks", path: "bookmarks" },
+          { name: "Posters", path: "posters" },
+        ];
+
+        categories.forEach((category) => {
+          const tile = document.createElement("a");
+          tile.className = "shop-tile";
+          tile.href = `shop/${category.path}.html`;
+
+          const label = document.createElement("span");
+          label.className = "shop-tile__label";
+          label.textContent = category.name;
+
+          tile.appendChild(label);
+          shopTilesContainer.appendChild(tile);
+        });
+      })();
+    </script>
   </body>
 </html>

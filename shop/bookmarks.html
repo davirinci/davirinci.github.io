@@ -25,11 +25,73 @@
       </div>
     </nav>
 
-    <main class="container">
-      <h1>Bookmarks</h1>
-      <p>Coming soon.</p>
-    </main>
+    <div class="container gallery-container">
+      <section id="main">
+        <h1>Bookmarks</h1>
+        <div class="portrait-gallery" aria-label="Bookmark thumbnails"></div>
+      </section>
+    </div>
+
+    <div
+      class="lightbox"
+      data-active="false"
+      aria-hidden="true"
+      role="dialog"
+      aria-label="Image viewer"
+    >
+      <button class="lightbox__close" aria-label="Close viewer">×</button>
+      <button class="lightbox__nav lightbox__prev" aria-label="Previous image">
+        ‹
+      </button>
+      <button class="lightbox__nav lightbox__next" aria-label="Next image">
+        ›
+      </button>
+      <div class="lightbox__stage">
+        <div class="lightbox__carousel">
+          <div class="lightbox__slide lightbox__slide--prev-2">
+            <img src="" alt="" class="lightbox__carousel-image" />
+          </div>
+          <div class="lightbox__slide lightbox__slide--prev-1">
+            <img src="" alt="" class="lightbox__carousel-image" />
+          </div>
+          <div class="lightbox__slide lightbox__slide--center">
+            <img src="" alt="Current image" class="lightbox__image" />
+          </div>
+          <div class="lightbox__slide lightbox__slide--next-1">
+            <img src="" alt="" class="lightbox__carousel-image" />
+          </div>
+          <div class="lightbox__slide lightbox__slide--next-2">
+            <img src="" alt="" class="lightbox__carousel-image" />
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="../js/disable-contextmenu.js"></script>
+    <script src="../js/gallery.js"></script>
+    <script>
+      (() => {
+        const config = {
+          directory: "./images/bookmarks",
+          files: [
+            "albums-kendrick-lamar-gnx.webp",
+            "albums-led-zeppelin-mothership.webp",
+            "albums-nirvana-in-utero.webp",
+            "albums-nirvana-nevermind.webp",
+            "albums-pink-floyd-dark-side-of-the-moon.webp",
+            "albums-pink-floyd-wish-you-were-here.webp",
+            "albums-queen-hot-space.webp",
+            "albums-queen-sheer-heart-attack.webp",
+            "albums-queen-the-works.webp",
+            "albums-the-beatles-a-hard-days-night.webp",
+            "albums-the-beatles-let-it-be.webp",
+            "albums-the-beatles-yellow-submarine.webp",
+            "albums-the-local-train-aalas-ka-pedh.webp",
+            "albums-the-weeknd-starboy.webp",
+          ],
+        };
+        initializeGallery(".portrait-gallery", config);
+      })();
+    </script>
   </body>
 </html>

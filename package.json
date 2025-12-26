@@ -1,0 +1,15 @@
+{
+  "name": "davirinci-portfolio",
+  "version": "1.0.0",
+  "description": "Portfolio website for graphic designer Virinci",
+  "scripts": {
+    "build": "node build.js",
+    "start": "npx serve ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davirinci/davirinci.github.io.git"
+  },
+  "author": "Virinci",
+  "license": "MIT"
+}
