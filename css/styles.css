@@ -384,6 +384,17 @@ main.container {
   }
 }
 
+/* Disable dragging and selection on gallery images */
+.portrait-gallery img,
+.square-gallery img {
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  draggable: false;
+}
+
 .filter-buttons {
   display: flex;
   flex-wrap: wrap;
