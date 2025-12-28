@@ -115,9 +115,10 @@ npm start  # Start local server with live reload
 
 ### Stickers Gallery (Sequential)
 
-- **Layout**: Simple grid layout
-- **Features**: Auto-detection of numbered files
-- **Naming**: `{number}.webp`
+- **Layout**: Simple grid layout with advanced filtering
+- **Features**: Auto-detection of numbered files, multi-dimensional filtering (type, topic, OC, search)
+- **Naming**: `{type}-{topic}-{number}.webp`
+- **Example**: `game-ClashRoyale-005.webp`
 - **Example**: `1.webp`, `2.webp`, `3.webp`
 
 ## 🛠️ Technical Stack
