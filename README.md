@@ -49,7 +49,7 @@ const dimensions = imageSize(imagePath);
 Multi-dimensional filtering with real-time layout adaptation:
 
 - **Type filtering**: Photo, Postcard, Poster categories
-- **Topic filtering**: Artist, Movie, MMA, etc. with proper sorting
+- **Topic filtering**: Artist, Movie, etc. with proper sorting
 - **Original Content toggle**: OC/Non-OC content separation
 - **Search functionality**: Full-text search across image metadata
 - **Layout preservation**: Filtered results maintain justified layout without container resizing
@@ -115,10 +115,9 @@ npm start  # Start local server with live reload
 
 ### Stickers Gallery (Sequential)
 
-- **Layout**: Simple grid layout with advanced filtering
-- **Features**: Auto-detection of numbered files, multi-dimensional filtering (type, topic, OC, search)
-- **Naming**: `{type}-{topic}-{number}.webp`
-- **Example**: `game-ClashRoyale-005.webp`
+- **Layout**: Simple grid layout
+- **Features**: Auto-detection of numbered files
+- **Naming**: `{number}.webp`
 - **Example**: `1.webp`, `2.webp`, `3.webp`
 
 ## 🛠️ Technical Stack
