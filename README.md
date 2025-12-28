@@ -9,6 +9,7 @@ Hello, I'm Virinci, a graphic designer. This portfolio showcases my work through
 This portfolio implements a **custom justified gallery layout** that dynamically resizes images to fill each row exactly to the container width, similar to professional photography sites like Unsplash and Pinterest.
 
 **Key Innovations:**
+
 - **Exact Width Filling**: Each row is calculated to fill the available width precisely, eliminating gaps
 - **Aspect Ratio Preservation**: All images maintain their original proportions without cropping
 - **Unit-Based Packing**: Uses a smart packing algorithm that assigns "units" to images (portrait=1.0, landscape=1.6) for optimal row composition
@@ -20,6 +21,7 @@ This portfolio implements a **custom justified gallery layout** that dynamically
 - **Real-time Adaptation**: Layout recalculates instantly on window resize and filter changes
 
 **Technical Implementation:**
+
 - JavaScript-driven layout calculation using `getBoundingClientRect()` for precise width measurement
 - CSS `flexbox` with pixel-perfect dimensions applied via inline styles
 - MutationObserver for detecting filter changes and triggering re-layout
@@ -36,6 +38,7 @@ const dimensions = imageSize(imagePath);
 ```
 
 **Benefits:**
+
 - No manual dimension specification required
 - Eliminates layout shift during page load
 - Enables precise aspect ratio calculations
@@ -44,6 +47,7 @@ const dimensions = imageSize(imagePath);
 ### Advanced Filtering System
 
 Multi-dimensional filtering with real-time layout adaptation:
+
 - **Type filtering**: Photo, Postcard, Poster categories
 - **Topic filtering**: Artist, Movie, MMA, etc. with proper sorting
 - **Original Content toggle**: OC/Non-OC content separation
@@ -96,18 +100,21 @@ npm start  # Start local server with live reload
 ## 🖼️ Gallery Types
 
 ### Posters Gallery (Justified Layout)
+
 - **Layout**: Custom justified algorithm with exact width filling
 - **Features**: Advanced filtering, responsive packing, aspect ratio preservation
 - **Naming**: `{type}-{topic}-{description}-oc.webp`
 - **Example**: `poster-MMA-dustin-poirer-oc.webp`
 
 ### Bookmarks Gallery (Artist-Categorized)
+
 - **Layout**: Grid-based with artist grouping and headers
 - **Features**: Automatic artist detection and sorting
 - **Naming**: `albums-{artist}-{album}.webp`
 - **Example**: `albums-queen-the-works.webp`
 
 ### Stickers Gallery (Sequential)
+
 - **Layout**: Simple grid layout
 - **Features**: Auto-detection of numbered files
 - **Naming**: `{number}.webp`
@@ -133,11 +140,13 @@ npm start  # Start local server with live reload
 ## 📝 Adding New Images
 
 ### For Posters/Bookmarks
+
 1. Add WebP images to appropriate `shop/images/{category}/` folder
 2. Follow naming conventions above
 3. Commit and push - build runs automatically
 
 ### For Stickers
+
 1. Add sequentially numbered WebP files to `shop/images/stickers/`
 2. Build script auto-detects and includes all files
 
