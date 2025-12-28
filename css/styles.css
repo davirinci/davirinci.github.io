@@ -110,6 +110,7 @@ body {
 #mainHeader h1 {
   margin: 0;
   color: var(--header-title-color);
+  line-height: 1.6em;
 }
 
 #mainNav {
@@ -129,7 +130,7 @@ body {
 #mainNav ul {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
   flex-wrap: nowrap;
   overflow-x: auto;
   overflow-y: visible;
@@ -149,8 +150,8 @@ body {
   display: block;
   color: var(--nav-text);
   text-decoration: none;
-  font-size: 18px;
-  padding: 8px 12px;
+  font-size: 15px;
+  padding: 6px 10px;
 }
 
 /* Active page indication */
@@ -241,6 +242,13 @@ main h1,
 /* Consistent padding for main content areas */
 main.container {
   padding: 24px 0;
+}
+
+@media (max-width: 768px) {
+  #mainNav .container,
+  #mainHeader .container {
+    width: 90%;
+  }
 }
 
 .shop-tiles {
