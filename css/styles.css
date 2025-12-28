@@ -446,30 +446,6 @@ main.container {
   box-sizing: border-box;
 }
 
-/* Mobile search bar - sticky at top when active */
-@media (max-width: 1199px) {
-  body.search-active #gallery-search {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  body.search-active .gallery-filters .filter-section:not(:first-child) {
-    display: none;
-  }
-
-  body.search-active .portrait-gallery,
-  body.search-active .square-gallery {
-    padding-top: 80px;
-  }
-}
-
 #gallery-search:focus {
   outline: none;
   background: var(--btn-hover-bg);

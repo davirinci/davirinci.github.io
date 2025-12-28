@@ -10,36 +10,6 @@ function initializeGallery(gallerySelector, config) {
   const gallery = document.querySelector(gallerySelector);
   if (!gallery) return;
 
-  // Mobile search state management
-  const searchInput = document.getElementById('gallery-search');
-  if (searchInput && window.innerWidth < 1200) {
-    searchInput.addEventListener('focus', () => {
-      document.body.classList.add('search-active');
-    });
-
-    searchInput.addEventListener('blur', () => {
-      // Keep search active if there's text
-      if (!searchInput.value.trim()) {
-        document.body.classList.remove('search-active');
-      }
-    });
-
-    searchInput.addEventListener('input', (e) => {
-      if (e.target.value.trim()) {
-        document.body.classList.add('search-active');
-      } else {
-        document.body.classList.remove('search-active');
-      }
-    });
-
-    // Handle window resize
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 1200) {
-        document.body.classList.remove('search-active');
-      }
-    });
-  }
-
   // Check if tiles are already rendered in HTML (from build.js)
   const existingTiles = gallery.querySelectorAll("button[data-index]");
   if (existingTiles.length > 0) {
