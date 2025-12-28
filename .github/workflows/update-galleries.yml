@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
   page_build:
 
+permissions:
+  contents: write
+
 jobs:
   update-galleries:
     runs-on: ubuntu-latest
