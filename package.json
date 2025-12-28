@@ -13,7 +13,6 @@
   "author": "Virinci",
   "license": "MIT",
   "devDependencies": {
-    "image-size": "^2.0.2",
-    "sharp": "^0.34.5"
+    "image-size": "^1.1.1"
   }
 }

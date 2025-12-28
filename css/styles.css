@@ -311,7 +311,7 @@ main.container {
   }
 
   .gallery-filters {
-    padding: 0;
+    padding: 0 14px 0 0;
     width: 240px;
     position: sticky;
     top: 80px;
@@ -367,7 +367,7 @@ main.container {
 /* Sidebar scrollbar styling for large screens */
 @media (min-width: 1200px) {
   .gallery-filters::-webkit-scrollbar {
-    width: 6px;
+    width: 9px;
   }
 
   .gallery-filters::-webkit-scrollbar-track {
@@ -469,29 +469,64 @@ main.container {
   justify-items: center;
 }
 
-/* Poster-specific gallery with larger tiles */
+/* Poster gallery: Justified gallery layout - full width rows with variable heights */
 body:has([aria-label="Print thumbnails"]) .portrait-gallery {
-  /* Responsive multi-column: enable 3–4 columns on wider screens */
-  /* Use minmax with fixed minimum to prevent single-item resize */
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  /* Use the same value for gap and padding to achieve edge-to-edge look */
-  gap: clamp(8px, 2vw, 20px);
-  padding: clamp(8px, 2vw, 20px);
-  grid-auto-flow: dense;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 20px;
 }
 
-/* Override padding for posters when in sidebar layout */
-@media (min-width: 1200px) {
-  body:has([aria-label="Print thumbnails"]) .portrait-gallery {
-    padding: 0;
-    gap: clamp(12px, 1.5vw, 20px);
+body:has([aria-label="Print thumbnails"]) .portrait-gallery .portrait-tile {
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+body:has([aria-label="Print thumbnails"]) .portrait-gallery .portrait-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Portrait orientation screens */
+@media (max-aspect-ratio: 1/1) {
+  body:has([aria-label="Print thumbnails"])
+    .portrait-gallery
+    .portrait-tile
+    img {
+    height: 30vh;
   }
 }
 
-/* Wider screens: allow tighter min width for up to 4+ columns */
-@media (min-width: 1400px) {
+/* Short screens */
+@media (max-height: 480px) {
+  body:has([aria-label="Print thumbnails"])
+    .portrait-gallery
+    .portrait-tile
+    img {
+    height: 80vh;
+  }
+}
+
+/* Smaller screens in portrait */
+@media (max-aspect-ratio: 1/1) and (max-width: 480px) {
   body:has([aria-label="Print thumbnails"]) .portrait-gallery {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    flex-direction: column;
+  }
+
+  body:has([aria-label="Print thumbnails"]) .portrait-gallery .portrait-tile {
+    width: 100%;
+  }
+
+  body:has([aria-label="Print thumbnails"])
+    .portrait-gallery
+    .portrait-tile
+    img {
+    width: 100%;
+    height: auto;
+    max-height: 75vh;
   }
 }
 
@@ -507,21 +542,6 @@ body:has([aria-label="Print thumbnails"]) .portrait-gallery {
   transition: transform 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
   /* Slightly subtler shadow for a more filled, edge-to-edge look */
   box-shadow: var(--tile-shadow);
-}
-
-/* Landscape posters span more columns to take horizontal space */
-.portrait-tile[data-orientation="landscape"] {
-  /* Inline aspect-ratio ensures horizontal box; span two columns for emphasis */
-  grid-column: span 2;
-}
-
-/* On narrow viewports, avoid forced spanning to keep columns even */
-@media (max-width: 640px) {
-  body:has([aria-label="Print thumbnails"])
-    .portrait-gallery
-    .portrait-tile[data-orientation="landscape"] {
-    grid-column: span 1;
-  }
 }
 
 .portrait-tile:hover {

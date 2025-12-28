@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const sharp = require("sharp");
+const imageSize = require("image-size");
 
 /**
  * Build script to automatically update gallery file lists
@@ -392,17 +392,17 @@ async function updatePostersGallery() {
 
     // Parse all files to extract type and topic
     const parsedFiles = await Promise.all(
-      webpFiles.map(async (f) => {
+      webpFiles.map((f) => {
         const parsed = parseFilename(f);
         if (!parsed) return null;
 
         // Detect image dimensions and orientation
         const imagePath = path.join(postersDir, f);
         try {
-          const metadata = await sharp(imagePath).metadata();
+          const metadata = imageSize(imagePath);
           parsed.width = metadata.width;
           parsed.height = metadata.height;
-          const aspectRatio = metadata.width / metadata.height;
+          const aspectRatio = (metadata.width || 2) / (metadata.height || 3);
           // Consider landscape if width > height (aspect ratio > 1)
           parsed.orientation = aspectRatio > 1 ? "landscape" : "portrait";
           parsed.aspectRatio = aspectRatio;
@@ -434,20 +434,21 @@ async function updatePostersGallery() {
     // Generate filter buttons HTML
     const filterHtml = generateFilterHtml(types, topics);
 
-    // Generate gallery items with data attributes
+    // Generate gallery items with dimensions for justified layout calculation
     const galleryItemsHtml = validParsedFiles
-      .map(
-        (item, idx) =>
-          `<button class="portrait-tile" data-index="${idx}" data-type="${
-            item.typeRaw
-          }" data-topic="${item.topicRaw}" data-oc="${
-            item.isOc ? "true" : "false"
-          }" data-search-terms="${item.searchTerms.join(
-            " "
-          )}" data-orientation="${item.orientation}">
+      .map((item, idx) => {
+        return `<button class="portrait-tile" data-index="${idx}" data-type="${
+          item.typeRaw
+        }" data-topic="${item.topicRaw}" data-oc="${
+          item.isOc ? "true" : "false"
+        }" data-search-terms="${item.searchTerms.join(
+          " "
+        )}" data-orientation="${item.orientation}" data-width="${
+          item.width
+        }" data-height="${item.height}">
         <img src="./images/posters/${item.file}" alt="${item.topic}">
-      </button>`
-      )
+      </button>`;
+      })
       .join("\n        ");
 
     // Replace filter and gallery content
