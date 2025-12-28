@@ -10,6 +10,36 @@ function initializeGallery(gallerySelector, config) {
   const gallery = document.querySelector(gallerySelector);
   if (!gallery) return;
 
+  // Mobile search state management
+  const searchInput = document.getElementById('gallery-search');
+  if (searchInput && window.innerWidth < 1200) {
+    searchInput.addEventListener('focus', () => {
+      document.body.classList.add('search-active');
+    });
+
+    searchInput.addEventListener('blur', () => {
+      // Keep search active if there's text
+      if (!searchInput.value.trim()) {
+        document.body.classList.remove('search-active');
+      }
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      if (e.target.value.trim()) {
+        document.body.classList.add('search-active');
+      } else {
+        document.body.classList.remove('search-active');
+      }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1200) {
+        document.body.classList.remove('search-active');
+      }
+    });
+  }
+
   // Check if tiles are already rendered in HTML (from build.js)
   const existingTiles = gallery.querySelectorAll("button[data-index]");
   if (existingTiles.length > 0) {
@@ -83,9 +113,32 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
   const nextBtn = lightbox.querySelector(".lightbox__next");
 
   let currentIndex = 0;
+  let visibleSources = []; // Track currently visible images
+  let zoomLevel = 1;
+  let panX = 0;
+  let panY = 0;
+  let isPanning = false;
+  let panStartX = 0;
+  let panStartY = 0;
+  let slideshowInterval = null;
+  let isSlideshowActive = false;
+  let transitionMode = 0; // 0 = fade, 1 = movement
 
-  function updateCarousel() {
-    const total = imageSources.length;
+  function getVisibleSources() {
+    // Get only visible tiles and their image sources
+    const visibleTiles = tiles.filter((tile) => tile.style.display !== "none");
+    return visibleTiles
+      .map((tile) => {
+        const img = tile.querySelector("img");
+        return img ? img.src : "";
+      })
+      .filter((src) => src);
+  }
+
+  function updateCarousel(animate = false) {
+    const total = visibleSources.length;
+    if (total === 0) return;
+
     const slides = {
       "prev-2": (currentIndex - 2 + total) % total,
       "prev-1": (currentIndex - 1 + total) % total,
@@ -94,17 +147,74 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
       "next-2": (currentIndex + 2) % total,
     };
 
+    const centerSlide = carousel.querySelector(".lightbox__slide--center");
+    const centerImg = centerSlide ? centerSlide.querySelector("img") : null;
+
+    if (animate && centerImg) {
+      if (transitionMode === 0) {
+        // Fade transition
+        centerImg.style.opacity = "0";
+        centerImg.style.transition = "opacity 300ms ease-out";
+
+        setTimeout(() => {
+          // Update image source while faded out
+          const newIndex = slides.center;
+          centerImg.src = visibleSources[newIndex];
+          centerImg.alt = `Image ${String(newIndex + 1).padStart(3, "0")}`;
+
+          // Reset transition for smooth fade-in
+          centerImg.style.transition = "opacity 300ms ease-in";
+          centerImg.style.opacity = "1";
+        }, 300);
+      } else {
+        // Movement transition - slide from right to left
+        centerImg.style.transition = "transform 400ms ease-in-out";
+        centerImg.style.transform = "translateX(-100%)";
+
+        setTimeout(() => {
+          // Update image source while off-screen
+          const newIndex = slides.center;
+          centerImg.src = visibleSources[newIndex];
+          centerImg.alt = `Image ${String(newIndex + 1).padStart(3, "0")}`;
+
+          // Reset transform and transition for slide-in from right
+          centerImg.style.transition = "none";
+          centerImg.style.transform = "translateX(100%)";
+
+          // Trigger reflow to ensure transition is applied after transform is set
+          centerImg.offsetHeight;
+
+          // Animate back to center
+          centerImg.style.transition = "transform 400ms ease-in-out";
+          centerImg.style.transform = "translateX(0)";
+        }, 200);
+      }
+    }
+
+    // Update all slides (including center if not animating)
     Object.entries(slides).forEach(([position, index]) => {
       const slide = carousel.querySelector(`.lightbox__slide--${position}`);
       if (!slide) return; // Skip if slide doesn't exist (for small screens)
       const img = slide.querySelector("img");
-      img.src = imageSources[index];
+
+      // Don't update center image source if animating (already done above)
+      if (animate && position === "center") return;
+
+      img.src = visibleSources[index];
       img.alt = `Image ${String(index + 1).padStart(3, "0")}`;
     });
   }
 
-  function openLightbox(index) {
-    currentIndex = index;
+  function openLightbox(clickedTile) {
+    // Update visible sources based on current filter state
+    visibleSources = getVisibleSources();
+
+    // Find the index of the clicked tile within visible tiles
+    const visibleTiles = tiles.filter((tile) => tile.style.display !== "none");
+    currentIndex = visibleTiles.indexOf(clickedTile);
+
+    if (currentIndex === -1) return; // Shouldn't happen, but safety check
+
     updateCarousel();
     lightbox.dataset.active = "true";
     lightbox.setAttribute("aria-hidden", "false");
@@ -113,27 +223,291 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
   }
 
   function closeLightbox() {
+    stopSlideshow();
+    resetZoom();
     lightbox.dataset.active = "false";
     lightbox.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
     document.body.classList.remove("lightbox-open");
   }
 
-  function showNext(delta) {
-    const total = imageSources.length;
+  function showNext(delta, animate = false) {
+    const total = visibleSources.length;
+    if (total === 0) return;
     currentIndex = (currentIndex + delta + total) % total;
-    updateCarousel();
+    updateCarousel(animate);
+  }
+
+  function zoomIn() {
+    zoomLevel = Math.min(zoomLevel + 0.25, 3);
+    applyZoom();
+  }
+
+  function zoomOut() {
+    zoomLevel = Math.max(zoomLevel - 0.25, 0.5);
+    applyZoom();
+  }
+
+  function resetZoom() {
+    zoomLevel = 1;
+    panX = 0;
+    panY = 0;
+    applyZoom();
+  }
+
+  function applyZoom() {
+    const centerSlide = carousel.querySelector(".lightbox__slide--center");
+    if (centerSlide) {
+      const img = centerSlide.querySelector("img");
+      if (img) {
+        img.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`;
+        img.style.transition = "transform 200ms ease";
+        img.style.cursor = zoomLevel > 1 ? "grab" : "default";
+      }
+    }
+
+    // Update zoom button states
+    const zoomInBtn = lightbox.querySelector(".lightbox__zoom-in");
+    const zoomOutBtn = lightbox.querySelector(".lightbox__zoom-out");
+    if (zoomInBtn) zoomInBtn.disabled = zoomLevel >= 3;
+    if (zoomOutBtn) zoomOutBtn.disabled = zoomLevel <= 0.5;
+  }
+
+  function startSlideshow() {
+    if (isSlideshowActive) return;
+    isSlideshowActive = true;
+    const playBtn = lightbox.querySelector(".lightbox__slideshow");
+    if (playBtn) {
+      playBtn.textContent = "⏸";
+      playBtn.setAttribute("aria-label", "Pause slideshow");
+    }
+    slideshowInterval = setInterval(() => {
+      showNext(1, true);
+    }, 3000);
+  }
+
+  function stopSlideshow() {
+    if (!isSlideshowActive) return;
+    isSlideshowActive = false;
+    const playBtn = lightbox.querySelector(".lightbox__slideshow");
+    if (playBtn) {
+      playBtn.textContent = "▶";
+      playBtn.setAttribute("aria-label", "Play slideshow");
+    }
+    if (slideshowInterval) {
+      clearInterval(slideshowInterval);
+      slideshowInterval = null;
+    }
+  }
+
+  function toggleSlideshow() {
+    if (isSlideshowActive) {
+      stopSlideshow();
+    } else {
+      startSlideshow();
+    }
   }
 
   tiles.forEach((tile) => {
     tile.addEventListener("click", () => {
-      const index = Number(tile.dataset.index);
-      openLightbox(index);
+      openLightbox(tile);
     });
   });
 
+  // Prevent dragging on lightbox images
+  carousel.querySelectorAll("img").forEach((img) => {
+    img.addEventListener("dragstart", (e) => e.preventDefault());
+
+    // Pan/drag functionality for zoomed images
+    img.addEventListener("mousedown", (e) => {
+      if (zoomLevel <= 1) return;
+      isPanning = true;
+      panStartX = e.clientX;
+      panStartY = e.clientY;
+      img.style.cursor = "grabbing";
+      img.style.transition = "none";
+      e.preventDefault();
+    });
+
+    img.addEventListener(
+      "touchstart",
+      (e) => {
+        if (zoomLevel <= 1) return;
+        isPanning = true;
+        panStartX = e.touches[0].clientX;
+        panStartY = e.touches[0].clientY;
+        img.style.transition = "none";
+      },
+      { passive: false }
+    );
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isPanning || zoomLevel <= 1) return;
+    const centerImg = carousel.querySelector(".lightbox__slide--center img");
+    if (!centerImg) return;
+
+    const deltaX = (e.clientX - panStartX) / zoomLevel;
+    const deltaY = (e.clientY - panStartY) / zoomLevel;
+
+    panX += deltaX;
+    panY += deltaY;
+    panStartX = e.clientX;
+    panStartY = e.clientY;
+
+    centerImg.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`;
+  });
+
+  document.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!isPanning || zoomLevel <= 1) return;
+      const centerImg = carousel.querySelector(".lightbox__slide--center img");
+      if (!centerImg) return;
+
+      const deltaX = (e.touches[0].clientX - panStartX) / zoomLevel;
+      const deltaY = (e.touches[0].clientY - panStartY) / zoomLevel;
+
+      panX += deltaX;
+      panY += deltaY;
+      panStartX = e.touches[0].clientX;
+      panStartY = e.touches[0].clientY;
+
+      centerImg.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`;
+    },
+    { passive: false }
+  );
+
+  document.addEventListener("mouseup", () => {
+    if (!isPanning) return;
+    isPanning = false;
+    const centerImg = carousel.querySelector(".lightbox__slide--center img");
+    if (centerImg) {
+      centerImg.style.cursor = zoomLevel > 1 ? "grab" : "default";
+      centerImg.style.transition = "transform 200ms ease";
+    }
+  });
+
+  document.addEventListener("touchend", () => {
+    if (!isPanning) return;
+    isPanning = false;
+    const centerImg = carousel.querySelector(".lightbox__slide--center img");
+    if (centerImg) {
+      centerImg.style.transition = "transform 200ms ease";
+    }
+  });
+
+  // Click handlers for prev/next slides
+  const prevSlide1 = carousel.querySelector(".lightbox__slide--prev-1");
+  const prevSlide2 = carousel.querySelector(".lightbox__slide--prev-2");
+  const nextSlide1 = carousel.querySelector(".lightbox__slide--next-1");
+  const nextSlide2 = carousel.querySelector(".lightbox__slide--next-2");
+
+  if (prevSlide1) {
+    prevSlide1.addEventListener("click", (event) => {
+      event.stopPropagation();
+      showNext(-1, true);
+    });
+  }
+  if (prevSlide2) {
+    prevSlide2.addEventListener("click", (event) => {
+      event.stopPropagation();
+      showNext(-1, true);
+    });
+  }
+  if (nextSlide1) {
+    nextSlide1.addEventListener("click", (event) => {
+      event.stopPropagation();
+      showNext(1, true);
+    });
+  }
+  if (nextSlide2) {
+    nextSlide2.addEventListener("click", (event) => {
+      event.stopPropagation();
+      showNext(1, true);
+    });
+  }
+
   closeBtn.addEventListener("click", closeLightbox);
-  lightbox.addEventListener("click", closeLightbox);
+
+  // Close lightbox when clicking outside center image and controls
+  lightbox.addEventListener("click", (e) => {
+    // Don't close if clicking on close button (handled above)
+    if (e.target === closeBtn) return;
+
+    // Don't close if clicking on carousel center slide or its children
+    const centerSlide = carousel.querySelector(".lightbox__slide--center");
+    if (centerSlide && centerSlide.contains(e.target)) return;
+
+    // Don't close if clicking on side slides
+    const prevSlide1 = carousel.querySelector(".lightbox__slide--prev-1");
+    const prevSlide2 = carousel.querySelector(".lightbox__slide--prev-2");
+    const nextSlide1 = carousel.querySelector(".lightbox__slide--next-1");
+    const nextSlide2 = carousel.querySelector(".lightbox__slide--next-2");
+
+    if (
+      (prevSlide1 && prevSlide1.contains(e.target)) ||
+      (prevSlide2 && prevSlide2.contains(e.target)) ||
+      (nextSlide1 && nextSlide1.contains(e.target)) ||
+      (nextSlide2 && nextSlide2.contains(e.target))
+    ) {
+      return;
+    }
+
+    // Don't close if clicking on nav buttons
+    const navButtons = lightbox.querySelectorAll(".lightbox__nav");
+    if (Array.from(navButtons).some((btn) => btn.contains(e.target))) return;
+
+    closeLightbox();
+  });
+
+  // Zoom controls
+  const zoomInBtn = lightbox.querySelector(".lightbox__zoom-in");
+  const zoomOutBtn = lightbox.querySelector(".lightbox__zoom-out");
+  const zoomResetBtn = lightbox.querySelector(".lightbox__zoom-reset");
+  const transitionBtn = lightbox.querySelector(".lightbox__transition");
+  const slideshowBtn = lightbox.querySelector(".lightbox__slideshow");
+
+  if (zoomInBtn) {
+    zoomInBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      zoomIn();
+    });
+  }
+
+  if (zoomOutBtn) {
+    zoomOutBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      zoomOut();
+    });
+  }
+
+  if (zoomResetBtn) {
+    zoomResetBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      resetZoom();
+    });
+  }
+
+  if (transitionBtn) {
+    transitionBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      transitionMode = (transitionMode + 1) % 2;
+      // Update button appearance based on mode
+      transitionBtn.textContent = transitionMode === 0 ? "⟺" : "◜◝";
+      transitionBtn.setAttribute(
+        "aria-label",
+        transitionMode === 0 ? "Fade transition" : "Movement transition"
+      );
+    });
+  }
+
+  if (slideshowBtn) {
+    slideshowBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleSlideshow();
+    });
+  }
 
   prevBtn.addEventListener("click", (event) => {
     event.stopPropagation();
@@ -158,16 +532,39 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
     if (event.key === "ArrowLeft") showNext(-1);
   });
 
-  // Touch swipe support for mobile/tablet
+  // Touch swipe support for mobile/tablet with smooth animations
   let touchStartX = 0;
   let touchEndX = 0;
+  let touchStartY = 0;
+  let isDragging = false;
   const minSwipeDistance = 50; // minimum distance for a swipe
+  const stage = lightbox.querySelector(".lightbox__stage");
 
   lightbox.addEventListener(
     "touchstart",
     (event) => {
       if (lightbox.dataset.active !== "true") return;
       touchStartX = event.changedTouches[0].screenX;
+      touchStartY = event.changedTouches[0].screenY;
+      isDragging = true;
+      carousel.style.transition = "none";
+    },
+    { passive: true }
+  );
+
+  lightbox.addEventListener(
+    "touchmove",
+    (event) => {
+      if (!isDragging || lightbox.dataset.active !== "true") return;
+      const currentX = event.changedTouches[0].screenX;
+      const currentY = event.changedTouches[0].screenY;
+      const deltaX = currentX - touchStartX;
+      const deltaY = Math.abs(currentY - touchStartY);
+
+      // Only track horizontal swipes
+      if (Math.abs(deltaX) > deltaY) {
+        carousel.style.transform = `translateX(${deltaX}px)`;
+      }
     },
     { passive: true }
   );
@@ -177,6 +574,9 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
     (event) => {
       if (lightbox.dataset.active !== "true") return;
       touchEndX = event.changedTouches[0].screenX;
+      isDragging = false;
+      carousel.style.transition = "transform 300ms ease-out";
+      carousel.style.transform = "translateX(0)";
       handleSwipe();
     },
     { passive: true }
@@ -285,6 +685,26 @@ function applyGalleryFilters() {
       tile.style.display = "none";
     }
   });
+
+  // Scroll to gallery after filtering
+  // Only scroll on mobile/tablet (non-sidebar layouts)
+  const isSidebarLayout = window.matchMedia("(min-width: 1200px)").matches;
+  if (!isSidebarLayout) {
+    const gallery = document.querySelector(
+      ".portrait-gallery, .square-gallery"
+    );
+    if (gallery) {
+      // Small delay to ensure layout is updated
+      setTimeout(() => {
+        const galleryTop = gallery.getBoundingClientRect().top + window.scrollY;
+        const offset = 140; // Offset to account for sticky search bar
+        window.scrollTo({
+          top: galleryTop - offset,
+          behavior: "smooth",
+        });
+      }, 100);
+    }
+  }
 }
 
 // Auto-initialize filters when DOM is ready
