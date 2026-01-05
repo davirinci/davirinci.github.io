@@ -181,6 +181,57 @@ body {
   border-bottom: 2px solid var(--accent);
 }
 
+/* Footer */
+#siteFooter {
+  background: var(--header-bg);
+  color: var(--header-text);
+  padding: 24px 0;
+  margin-top: 32px;
+}
+
+#siteFooter .footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+#siteFooter h3,
+#siteFooter h4 {
+  margin: 0 0 8px;
+  color: var(--header-text);
+}
+
+#siteFooter p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+#siteFooter ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+#siteFooter a {
+  color: var(--header-text);
+  text-decoration: none;
+}
+
+#siteFooter a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  #siteFooter .footer-grid {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
 #mainNav li:hover {
   background: var(--btn-hover-bg);
 }
