@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bookmarks – Various Thingamjigs</title>
     <script>
-      const saved = localStorage.getItem("theme");
-      if (saved && ["royal", "deep", "dark", "light"].includes(saved)) {
-        document.documentElement.setAttribute("data-theme", saved);
-      }
+      (function() {
+          const config = {
+            images: ["./images/bookmarks/albums-KendrickLamar-gnx-oc.webp","./images/bookmarks/albums-ledZeppelin-mothership-oc.webp","./images/bookmarks/albums-nirvana-in-utero-oc.webp","./images/bookmarks/albums-nirvana-nevermind-oc.webp","./images/bookmarks/albums-pinkFloyd-dark-side-of-the-moon-oc.webp","./images/bookmarks/albums-pinkFloyd-wish-you-were-here-oc.webp","./images/bookmarks/albums-queen-hot-space-oc.webp","./images/bookmarks/albums-queen-sheer-heart-attack-oc.webp","./images/bookmarks/albums-queen-the-works-oc.webp","./images/bookmarks/albums-the-beatles-a-hard-days-night-oc.webp","./images/bookmarks/albums-the-beatles-let-it-be-oc.webp","./images/bookmarks/albums-the-beatles-yellow-submarine-oc.webp","./images/bookmarks/albums-the-localTrain-aalas-ka-pedh-oc.webp","./images/bookmarks/albums-the-weeknd-starboy-oc.webp"],
+            types: ["Albums"],
+            topics: ["KendrickLamar","LedZeppelin","Nirvana","PinkFloyd","Queen","The Beatles","The LocalTrain","The Weeknd"]
+          };
+          initializeGallery(".portrait-gallery", config);
+        })();
     </script>
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
