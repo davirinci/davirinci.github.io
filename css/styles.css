@@ -185,6 +185,24 @@ body {
   border-bottom: 2px solid var(--accent);
 }
 
+/* Hover/active container highlight without removing underline */
+#mainNav li:hover {
+  background: var(--btn-hover-bg);
+  border-radius: 6px;
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+#mainNav a.active,
+#mainNav a[aria-current="page"] {
+  background: var(--btn-hover-bg);
+  border-radius: 6px;
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+  font-weight: 700;
+  border-bottom: 2px solid var(--accent);
+}
+
 /* Footer */
 #siteFooter {
   background: var(--header-bg);
