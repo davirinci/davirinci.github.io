@@ -90,6 +90,16 @@ body {
   color: var(--text);
 }
 
+/* Responsive iframe styling */
+#navbar {
+  display: block;
+  width: 100%;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: var(--nav-bg);
+}
+
 .container {
   width: 80%;
   margin: auto;
@@ -121,10 +131,16 @@ body {
   top: 0;
   z-index: 1000; /* ensure navbar stays above content & gallery */
   overflow: visible;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #mainNav .container {
   overflow: visible !important;
+  width: 80% !important;
+  margin: auto !important;
 }
 
 #mainNav ul {
@@ -135,10 +151,11 @@ body {
   overflow-x: auto;
   overflow-y: visible;
   white-space: nowrap;
-  padding: 0;
+  padding: 2px 0;
   margin: 0;
   list-style: none;
   position: relative;
+  line-height: 1;
 }
 #mainNav li {
   padding: 0;
@@ -151,7 +168,7 @@ body {
   color: var(--nav-text);
   text-decoration: none;
   font-size: 15px;
-  padding: 6px 10px;
+  padding: 3px 10px;
 }
 
 /* Active page indication */
@@ -170,7 +187,7 @@ body {
   background: var(--accent);
   color: var(--bg);
   border: 2px solid var(--accent);
-  padding: 6px 14px;
+  padding: 3px 14px;
   border-radius: 6px;
   font-size: 15px;
   font-weight: 600;
