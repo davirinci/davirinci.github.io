@@ -21,6 +21,7 @@
 }
 
 /* Midnight blue deep theme */
+:root[data-theme="deep"],
 body[data-theme="deep"] {
   --bg: #0b1e3a; /* midnight blue */
   --text: #e6edf7;
@@ -42,6 +43,7 @@ body[data-theme="deep"] {
 }
 
 /* OLED dark theme: pure black, high-contrast, pastel accents */
+:root[data-theme="dark"],
 body[data-theme="dark"] {
   --bg: #000000;
   --text: #e8e8e8;
@@ -62,6 +64,7 @@ body[data-theme="dark"] {
   --jumbo-title-color: #ffffff;
 }
 
+:root[data-theme="light"],
 body[data-theme="light"] {
   --bg: #ffffff;
   --text: #333333;

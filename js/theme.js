@@ -2,29 +2,47 @@
 (function () {
   const THEMES = ["royal", "deep", "dark", "light"];
 
+  function applyThemeToDocument(doc, theme) {
+    if (!doc) return;
+    if (doc.documentElement) {
+      doc.documentElement.setAttribute("data-theme", theme);
+    }
+    if (doc.body) {
+      doc.body.setAttribute("data-theme", theme);
+    }
+  }
+
   function setTheme(theme) {
-    if (THEMES.includes(theme)) {
-      document.body.setAttribute("data-theme", theme);
-      // Also update parent window if in iframe
-      try {
-        if (window.parent !== window) {
-          window.parent.document.body.setAttribute("data-theme", theme);
-        }
-      } catch (e) {
-        // Cross-origin iframe, silently fail
+    if (!THEMES.includes(theme)) return;
+
+    // Apply to current document
+    applyThemeToDocument(document, theme);
+
+    // Also update parent window if in iframe
+    try {
+      if (window.parent && window.parent !== window) {
+        applyThemeToDocument(window.parent.document, theme);
       }
+    } catch (e) {
+      // Cross-origin iframe, silently fail
     }
   }
 
   function updateToggleLabel(btn) {
-    const theme = document.body.getAttribute("data-theme") || "royal";
+    const theme =
+      document.documentElement.getAttribute("data-theme") ||
+      document.body.getAttribute("data-theme") ||
+      "royal";
     const pretty = theme.charAt(0).toUpperCase() + theme.slice(1);
     btn.textContent = `Theme: ${pretty}`;
     btn.setAttribute("aria-label", `Current theme ${pretty}`);
   }
 
   function toggleTheme() {
-    const current = document.body.getAttribute("data-theme") || "royal";
+    const current =
+      document.documentElement.getAttribute("data-theme") ||
+      document.body.getAttribute("data-theme") ||
+      "royal";
     const idx = THEMES.indexOf(current);
     const next = THEMES[(idx + 1) % THEMES.length];
     setTheme(next);

@@ -3,6 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      const saved = localStorage.getItem("theme");
+      if (saved && ["royal", "deep", "dark", "light"].includes(saved)) {
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    </script>
     <link rel="stylesheet" href="/css/styles.css" />
     <style>
       html,
@@ -21,9 +27,9 @@
     <nav id="mainNav">
       <div class="container">
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/shop.html">Shop</a></li>
-          <li><a href="/contact.html">Contact Me</a></li>
+          <li><a href="/" target="_parent">Home</a></li>
+          <li><a href="/shop.html" target="_parent">Shop</a></li>
+          <li><a href="/contact.html" target="_parent">Contact Me</a></li>
           <li>
             <button id="theme-toggle" aria-label="Toggle theme">
               Dark Mode
