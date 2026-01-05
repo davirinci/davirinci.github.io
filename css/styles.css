@@ -259,6 +259,139 @@ body {
   background: var(--btn-hover-bg);
 }
 
+/* Contact linktree section */
+.contact-links {
+  margin: 32px auto;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.contact-left {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  min-width: 0;
+}
+
+.contact-links h2 {
+  margin-bottom: 8px;
+}
+
+.contact-links p {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.link-buttons {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 180ms ease;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+:root[data-theme="light"] .link-btn,
+body[data-theme="light"] .link-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.link-btn:hover {
+  background: var(--btn-hover-bg);
+  border-color: var(--accent);
+  color: var(--nav-text);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+  transform: translateY(-1px);
+}
+
+.link-btn.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+:root[data-theme="light"] .link-btn.primary,
+body[data-theme="light"] .link-btn.primary {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.link-btn.primary:hover {
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-bg);
+  color: var(--nav-text);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.26);
+  transform: translateY(-1px);
+}
+
+.cta-box {
+  margin-top: 0;
+  padding: 18px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+:root[data-theme="light"] .cta-box,
+body[data-theme="light"] .cta-box {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.cta-box h3 {
+  margin: 0 0 8px;
+}
+
+.cta-box p {
+  margin: 0 0 12px;
+}
+
+.contact-cta {
+  align-self: stretch;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-cta {
+    margin-top: 12px;
+  }
+}
+#mainNav li:hover {
+  background: var(--btn-hover-bg);
+}
+
 /* Theme toggle button styling */
 #theme-toggle {
   background: var(--accent);
