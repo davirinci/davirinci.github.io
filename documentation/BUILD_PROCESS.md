@@ -51,6 +51,7 @@ For each `.webp` file in the gallery directory:
 - **Format labels** for display (title-case: `kendricklamar` → "KendrickLamar")
 
 **Example:** `albums-the-beatles-yellow-submarine-oc.webp`
+
 - Type: `albums`
 - Topic: `the-beatles` → "The Beatles"
 - Search terms: `["the", "beatles", "yellow", "submarine"]`
