@@ -7,6 +7,7 @@ Portfolio site for graphic designer Virinci, featuring a custom justified galler
 - **[Naming Conventions](documentation/NAMING_CONVENTIONS.md)** - File naming rules for image assets
 - **[Image Formatting](documentation/IMAGE_FORMATTING.md)** - WebP conversion and sizing specifications
 - **[Build Process](documentation/BUILD_PROCESS.md)** - Automated workflow and build details
+- **[Justified Layout](documentation/JUSTIFIED_LAYOUT.md)** - Technical deep-dive into the poster gallery algorithm
 - **[Development Guidelines](documentation/DEVELOPMENT_GUIDELINES.md)** - HTML/CSS/JS standards for adding pages
 
 ## 🚀 Quick Start
