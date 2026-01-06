@@ -5,6 +5,7 @@ Portfolio site for graphic designer Virinci, featuring a custom justified galler
 ## 📚 Documentation
 
 - **[Naming Conventions](documentation/NAMING_CONVENTIONS.md)** - File naming rules for image assets
+- **[Image Formatting](documentation/IMAGE_FORMATTING.md)** - WebP conversion and sizing specifications
 - **[Build Process](documentation/BUILD_PROCESS.md)** - Automated workflow and build details
 - **[Development Guidelines](documentation/DEVELOPMENT_GUIDELINES.md)** - HTML/CSS/JS standards for adding pages
 
