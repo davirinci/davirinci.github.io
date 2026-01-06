@@ -38,8 +38,9 @@ npm start  # Start local server
 "Rest", "all", and "day" are made searchable terms along with the topic.
 
 If the file is named `album-gangster-rest-all-day.webp`:
+
 - **Type** is `album`
-- **Topic** is `gangster` 
+- **Topic** is `gangster`
 - **Title/Description** is "rest all day", which can be searched for
 
 If the `-oc` slug is included in the filename, it will be categorized as Original Content. This is usually present at the end of the file, e.g., `album-gangster-rest-all-day-oc.webp`
@@ -53,6 +54,7 @@ If the `-oc` slug is included in the filename, it will be categorized as Origina
 **Naming Pattern:** `albums-{artist}-{album}-oc.webp`
 
 **Example Files:**
+
 - `albums-queen-the-works-oc.webp`
 - `albums-the-beatles-yellow-submarine-oc.webp`
 - `albums-pinkFloyd-dark-side-of-the-moon-oc.webp`
@@ -61,6 +63,7 @@ If the `-oc` slug is included in the filename, it will be categorized as Origina
 - `albums-nirvana-nevermind-oc.webp`
 
 **Generated Filters:**
+
 - **Type Filter:** Albums
 - **Topic Filters:** KendrickLamar, LedZeppelin, Nirvana, PinkFloyd, Queen, The Beatles, The LocalTrain, The Weeknd
 - **Search Terms:** Artist slug + album words (e.g., "queen the works", "beatles yellow submarine")
@@ -71,6 +74,7 @@ If the `-oc` slug is included in the filename, it will be categorized as Origina
 **Naming Pattern:** `{type}-{topic}-{description}-oc.webp`
 
 **Example Files:**
+
 - `poster-movie-fight-club.webp`
 - `poster-movie-drive-horizontal.webp`
 - `poster-series-breaking-bad-bb-collection.webp`
@@ -81,6 +85,7 @@ If the `-oc` slug is included in the filename, it will be categorized as Origina
 - `postcard-misc-pink-skel-on-green.webp`
 
 **Generated Filters:**
+
 - **Type Filters:** Photo, Postcard, Poster
 - **Topic Filters:** Artist, Batman, Car, MMA, Misc, Movie, Nalanda, Series, ThileepanDrawing
 - **Search Terms:** All words after type (e.g., "movie fight club", "series breaking bad bb collection", "batman rogues")
@@ -91,6 +96,7 @@ If the `-oc` slug is included in the filename, it will be categorized as Origina
 **Naming Pattern:** `{type}-{topic}-{number}.webp`
 
 **Example Files:**
+
 - `game-ClashRoyale-005.webp`
 - `show-BigBangTheory-001.webp`
 - `show-friends-077.webp`
@@ -98,6 +104,7 @@ If the `-oc` slug is included in the filename, it will be categorized as Origina
 - `misc-misc-064.webp`
 
 **Generated Filters:**
+
 - **Type Filters:** Game, Misc, Show
 - **Topic Filters:** BigBangTheory, ClashRoyale, Friends, Misc, RickAndMorty
 - **Search Terms:** Topic words only (numbers are excluded from search terms)
