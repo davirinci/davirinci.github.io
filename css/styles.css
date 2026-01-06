@@ -627,7 +627,6 @@ main.container {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  draggable: false;
 }
 
 .filter-buttons {
