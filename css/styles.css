@@ -7,7 +7,7 @@
   --nav-text: #fff; /* vivid yellow */
   --header-bg: #090040; /* darkest for header */
   --header-text: #ffffff;
-  --tile-bg: #0e1c36; /* subtle dark for tiles */
+  --tile-bg: #090040; /* matches body bg */
   --tile-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   --accent: #b13bff; /* neon purple accent */
   --btn-bg: #471396;
@@ -29,7 +29,7 @@ body[data-theme="deep"] {
   --nav-text: #e6edf7;
   --header-bg: #0b1e3a;
   --header-text: #e6edf7;
-  --tile-bg: #0e1c36;
+  --tile-bg: #0b1e3a;
   --tile-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
   --accent: #4c6fff;
   --btn-bg: #1b2a4a;
@@ -51,7 +51,7 @@ body[data-theme="dark"] {
   --nav-text: #e8e8e8;
   --header-bg: #000000;
   --header-text: #e8e8e8;
-  --tile-bg: #0a0a0a;
+  --tile-bg: #000000;
   --tile-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
   --accent: #90caf9; /* Material pastel blue */
   --btn-bg: #111111;
@@ -72,7 +72,7 @@ body[data-theme="light"] {
   --nav-text: #000000;
   --header-bg: #333333;
   --header-text: #ffffff;
-  --tile-bg: #111111;
+  --tile-bg: #ffffff;
   --tile-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
   --accent: #333333;
   --btn-bg: #e8e8e8;
@@ -727,12 +727,25 @@ main.container {
 
 .square-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(max(160px, 20%), 1fr));
   gap: 16px;
   padding: 24px 5vw;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   justify-items: center;
+}
+
+@media (min-width: 1200px) {
+  .square-gallery {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .square-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .square-tile {
@@ -745,20 +758,18 @@ main.container {
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  transition: transform 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
-  box-shadow: var(--tile-shadow);
+  transition: transform 180ms ease, opacity 180ms ease;
 }
 
 .square-tile:hover {
   opacity: 0.75;
   transform: scale(1.04);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
 .square-tile img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
