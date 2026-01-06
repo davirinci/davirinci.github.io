@@ -27,7 +27,21 @@ npm run build  # Manual build
 
 ### Posters (Justified Layout)
 
-Custom algorithm that packs images to fill rows precisely. Images are assigned "units" based on aspect ratio, then grouped into rows that fill the container width exactly. Dimensions are extracted during build for instant layout.
+Uses a custom justified gallery algorithm that dynamically packs images to fill each row exactly to the container width, similar to Unsplash or Flickr.
+
+**How it works:**
+
+- Each image is assigned "units" based on aspect ratio (portrait ≈ 1.0, landscape ≈ 1.6)
+- Algorithm groups images into rows targeting specific unit counts (varies by screen size)
+- Row heights are calculated to fill container width precisely, eliminating gaps
+- Dimensions are extracted during build and embedded as data attributes for instant layout
+- MutationObserver re-calculates layout when filters change or window resizes
+
+**Features:**
+
+- Preserves aspect ratios without cropping
+- Responsive breakpoints adjust packing density
+- Type/Topic filtering, search, OC toggle
 
 ### Bookmarks
 
