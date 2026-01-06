@@ -48,16 +48,19 @@ The `build.js` script processes each gallery:
 ### For each gallery type:
 
 **Bookmarks:**
+
 - Extracts artist and album from filenames
 - Groups by artist
 - Sorts alphabetically
 
 **Posters:**
+
 - Extracts dimensions for justified layout
 - Calculates aspect ratios
 - Determines orientation (portrait/landscape)
 
 **Stickers:**
+
 - Sequential ordering by filename
 - Simple grid layout (no dimension extraction needed)
 
