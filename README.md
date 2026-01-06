@@ -1,153 +1,135 @@
-# Davinci Portfolio - Advanced Gallery System
+# Davinci Portfolio
 
-Hello, I'm Virinci, a graphic designer. This portfolio showcases my work through an innovative gallery system with unique auto-resizing capabilities.
+Portfolio site for Virinci, a graphic designer, featuring a custom justified gallery layout and automated build system.
 
-## 🎨 Unique Features
-
-### Justified Gallery Layout Algorithm
-
-This portfolio implements a **custom justified gallery layout** that dynamically resizes images to fill each row exactly to the container width, similar to professional photography sites like Unsplash and Pinterest.
-
-**Key Innovations:**
-
-- **Exact Width Filling**: Each row is calculated to fill the available width precisely, eliminating gaps
-- **Aspect Ratio Preservation**: All images maintain their original proportions without cropping
-- **Unit-Based Packing**: Uses a smart packing algorithm that assigns "units" to images (portrait=1.0, landscape=1.6) for optimal row composition
-- **Responsive Breakpoints**: Adapts packing density based on screen size:
-  - Small screens (<500px): ~1.5 units per row
-  - Medium screens (500-800px): ~2.5 units per row
-  - Large screens (≥800px): ~4.0 units per row
-- **Visual Consistency**: Last row height matches the previous row for cohesive appearance
-- **Real-time Adaptation**: Layout recalculates instantly on window resize and filter changes
-
-**Technical Implementation:**
-
-- JavaScript-driven layout calculation using `getBoundingClientRect()` for precise width measurement
-- CSS `flexbox` with pixel-perfect dimensions applied via inline styles
-- MutationObserver for detecting filter changes and triggering re-layout
-- Container width accounting for sidebar presence and CSS padding
-
-### Automated Build System
-
-The build process automatically extracts image dimensions and generates gallery HTML with embedded metadata:
-
-```javascript
-// Extracts width/height from WebP files using image-size library
-const dimensions = imageSize(imagePath);
-// Embeds as data attributes: data-width="601" data-height="800"
-```
-
-**Benefits:**
-
-- No manual dimension specification required
-- Eliminates layout shift during page load
-- Enables precise aspect ratio calculations
-- Supports WebP format optimization
-
-### Advanced Filtering System
-
-Multi-dimensional filtering with real-time layout adaptation:
-
-- **Type filtering**: Photo, Postcard, Poster categories
-- **Topic filtering**: Artist, Movie, etc. with proper sorting
-- **Original Content toggle**: OC/Non-OC content separation
-- **Search functionality**: Full-text search across image metadata
-- **Layout preservation**: Filtered results maintain justified layout without container resizing
-
-## 🚀 Getting Started
+## 🚀 Setup
 
 ### Automated Deployment
 
-The galleries update automatically when you push image changes to GitHub:
+Galleries update automatically on push to `main`:
 
-1. **Add images** to `shop/images/` folders
-2. **Commit and push** to the `main` branch
-3. **GitHub Actions** automatically runs `build.js`
-4. **Gallery configs** are updated and committed back
+1. Add images to `shop/images/{category}/` folders
+2. Commit and push
+3. GitHub Actions runs `build.js`
+4. Gallery pages auto-update
 
-### Manual Build (if needed)
+### Manual Build
 
 ```bash
 npm run build
-# or
-node build.js
 ```
 
 ### Local Development
 
 ```bash
-npm start  # Start local server with live reload
+npm start  # Start local server
 ```
 
-## 📁 Project Structure
+## 📝 Naming Conventions for Image Assets
 
-```
-├── build.js                 # Automated gallery generation script
-├── js/
-│   ├── justified-layout.js  # Custom justified gallery algorithm
-│   ├── gallery.js          # Filtering and lightbox functionality
-│   └── theme.js            # Dark/light theme switching
-├── css/
-│   └── styles.css          # Responsive styling with sidebar layout
-├── shop/
-│   ├── posters.html        # Justified gallery implementation
-│   ├── bookmarks.html      # Artist-categorized gallery
-│   ├── stickers.html       # Sequential numbered gallery
-│   └── images/             # Source images organized by category
-└── package.json            # Dependencies and scripts
-```
+### Default Naming Convention
 
-## 🖼️ Gallery Types
+`{type}-{topic}-{rest}`
 
-### Posters Gallery (Justified Layout)
+`{rest}` may have more hyphen-separated values which will be part of the search terms.
 
-- **Layout**: Custom justified algorithm with exact width filling
-- **Features**: Advanced filtering, responsive packing, aspect ratio preservation
-- **Naming**: `{type}-{topic}-{description}-oc.webp`
-- **Example**: `poster-MMA-dustin-poirer-oc.webp`
+**Example:** `{rest} = {rest-all-day}`
 
-### Bookmarks Gallery (Artist-Categorized)
+"Rest", "all", and "day" are made searchable terms along with the topic.
 
-- **Layout**: Grid-based with artist grouping and headers
-- **Features**: Automatic artist detection and sorting
-- **Naming**: `albums-{artist}-{album}.webp`
-- **Example**: `albums-queen-the-works.webp`
+If the file is named `album-gangster-rest-all-day.webp`:
+- **Type** is `album`
+- **Topic** is `gangster` 
+- **Title/Description** is "rest all day", which can be searched for
 
-### Stickers Gallery (Sequential)
+If the `-oc` slug is included in the filename, it will be categorized as Original Content. This is usually present at the end of the file, e.g., `album-gangster-rest-all-day-oc.webp`
 
-- **Layout**: Simple grid layout
-- **Features**: Auto-detection of numbered files
-- **Naming**: `{number}.webp`
-- **Example**: `1.webp`, `2.webp`, `3.webp`
+---
 
-## 🛠️ Technical Stack
+### Examples for All Categories
 
-- **Build System**: Node.js with `image-size` for dimension extraction
-- **Layout Engine**: Custom JavaScript justified gallery algorithm
-- **Styling**: CSS Grid and Flexbox with responsive breakpoints
-- **Interactivity**: Vanilla JavaScript with MutationObserver for dynamic updates
-- **Image Format**: WebP for optimal compression and quality
-- **Deployment**: GitHub Pages with Actions automation
+#### Bookmarks
 
-## 🎯 Performance Optimizations
+**Naming Pattern:** `albums-{artist}-{album}-oc.webp`
 
-- **Lazy Loading**: Images load only when needed
-- **Dimension Pre-calculation**: No layout shift during page load
-- **Efficient Filtering**: DOM manipulation with minimal reflows
-- **Responsive Images**: Appropriate sizing for different screen densities
-- **WebP Format**: Modern compression with fallback support
+**Example Files:**
+- `albums-queen-the-works-oc.webp`
+- `albums-the-beatles-yellow-submarine-oc.webp`
+- `albums-pinkFloyd-dark-side-of-the-moon-oc.webp`
+- `albums-kendrickLamar-gnx-oc.webp`
+- `albums-the-weeknd-starboy-oc.webp`
+- `albums-nirvana-nevermind-oc.webp`
 
-## 📝 Adding New Images
+**Generated Filters:**
+- **Type Filter:** Albums
+- **Topic Filters:** KendrickLamar, LedZeppelin, Nirvana, PinkFloyd, Queen, The Beatles, The LocalTrain, The Weeknd
+- **Search Terms:** Artist slug + album words (e.g., "queen the works", "beatles yellow submarine")
+- **OC Status:** All marked as original content
 
-### For Posters/Bookmarks
+#### Posters/Postcards
 
-1. Add WebP images to appropriate `shop/images/{category}/` folder
-2. Follow naming conventions above
-3. Commit and push - build runs automatically
+**Naming Pattern:** `{type}-{topic}-{description}-oc.webp`
 
-### For Stickers
+**Example Files:**
+- `poster-movie-fight-club.webp`
+- `poster-movie-drive-horizontal.webp`
+- `poster-series-breaking-bad-bb-collection.webp`
+- `poster-batman-rogues-1.webp`
+- `poster-MMA-dustin-poirer-oc.webp`
+- `photo-nalanda-rainy-day-oc.webp`
+- `postcard-ThileepanDrawing-bison-oc.webp`
+- `postcard-misc-pink-skel-on-green.webp`
 
-1. Add sequentially numbered WebP files to `shop/images/stickers/`
-2. Build script auto-detects and includes all files
+**Generated Filters:**
+- **Type Filters:** Photo, Postcard, Poster
+- **Topic Filters:** Artist, Batman, Car, MMA, Misc, Movie, Nalanda, Series, ThileepanDrawing
+- **Search Terms:** All words after type (e.g., "movie fight club", "series breaking bad bb collection", "batman rogues")
+- **OC Status:** Mixed - some files marked with `-oc`, others not
 
-The justified gallery algorithm ensures your images always display optimally, filling available space while maintaining visual harmony across all device sizes.
+#### Stickers
+
+**Naming Pattern:** `{type}-{topic}-{number}.webp`
+
+**Example Files:**
+- `game-ClashRoyale-005.webp`
+- `show-BigBangTheory-001.webp`
+- `show-friends-077.webp`
+- `show-rickAndMorty-089.webp`
+- `misc-misc-064.webp`
+
+**Generated Filters:**
+- **Type Filters:** Game, Misc, Show
+- **Topic Filters:** BigBangTheory, ClashRoyale, Friends, Misc, RickAndMorty
+- **Search Terms:** Topic words only (numbers are excluded from search terms)
+- **OC Status:** None currently marked as original content
+
+---
+
+### Key Parsing Rules
+
+1. **Type** = Always first segment
+2. **Topic** = Second segment (if starts with "the-", includes next word: `the-beatles`, `the-weeknd`)
+3. **OC Detection** = `-oc` anywhere in filename → `data-oc="true"`
+4. **Search Terms** = Topic + remaining words (numbers excluded)
+5. **Filter Labels** = Title-cased for display (`kendricklamar` → "KendrickLamar")
+6. **Data Attributes** = Lowercase/hyphenated (`data-topic="the beatles"` for filtering)
+
+## 🖼️ Gallery Features
+
+### Posters (Justified Layout)
+
+- Custom algorithm fills rows precisely
+- Mixed aspect ratios with dimension extraction
+- Type/Topic filtering, search, OC toggle
+
+### Bookmarks
+
+- Grid layout with artist grouping
+- Automatic sorting by artist/album
+- Type/Topic filtering, search, OC toggle
+
+### Stickers
+
+- Uniform grid layout
+- Sequential numbering in filenames
+- Type/Topic filtering, search, OC toggle
