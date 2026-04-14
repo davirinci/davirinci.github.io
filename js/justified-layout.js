@@ -4,6 +4,7 @@ function initializeJustifiedLayout() {
     '.portrait-gallery[aria-label="Print thumbnails"]'
   );
   if (!gallery) return;
+  const isPosterPage = window.location.pathname.includes("/shop/posters");
 
   function layoutGallery() {
     const tiles = Array.from(gallery.querySelectorAll(".portrait-tile"));
@@ -37,9 +38,11 @@ function initializeJustifiedLayout() {
 
     const PORTRAIT_UNIT = 1.0;
     const LANDSCAPE_UNIT = 1.6;
+    const minItemsPerRow =
+      isPosterPage && containerWidth >= 1200 ? 4 : 1;
+    const maxRowHeightPx = window.innerHeight * 0.65;
 
     let i = 0;
-    let lastRowHeight = targetRowHeight;
 
     while (i < visibleTiles.length) {
       let row = [];
@@ -56,35 +59,104 @@ function initializeJustifiedLayout() {
         }
 
         const ar = w / h;
-        const isLandscape = ar >= 1.2;
+        const isPortrait =
+          tile.dataset.orientation === "portrait" ||
+          (tile.dataset.orientation !== "landscape" && ar <= 1);
+        const isLandscape = !isPortrait;
         const unit = isLandscape ? LANDSCAPE_UNIT : PORTRAIT_UNIT;
 
-        if (row.length > 0 && rowUnits + unit > TARGET_UNITS_PER_ROW * 1.2)
+        // If a row starts with a portrait and the next visible image is also portrait,
+        // force a pair so portrait images render two per row.
+        if (row.length === 0 && isPortrait) {
+          const nextTile = visibleTiles[i + 1];
+          if (nextTile) {
+            const nextW = parseInt(nextTile.dataset.width);
+            const nextH = parseInt(nextTile.dataset.height);
+            if (nextW && nextH) {
+              const nextAr = nextW / nextH;
+              const nextIsPortrait =
+                nextTile.dataset.orientation === "portrait" ||
+                (nextTile.dataset.orientation !== "landscape" && nextAr <= 1);
+
+              if (nextIsPortrait) {
+                row.push({ tile, aspectRatio: ar });
+                row.push({ tile: nextTile, aspectRatio: nextAr });
+                i += 2;
+                rowUnits += PORTRAIT_UNIT * 2;
+                break;
+              }
+            }
+          }
+        }
+
+        const currentAspectSum = row.reduce((s, r) => s + r.aspectRatio, 0);
+        const currentAvailableWidth = containerWidth - gap * (row.length - 1);
+        const predictedCurrentRowHeight =
+          row.length > 0 && currentAspectSum > 0
+            ? currentAvailableWidth / currentAspectSum
+            : Infinity;
+
+        if (
+          row.length > 0 &&
+          rowUnits + unit > TARGET_UNITS_PER_ROW * 1.2 &&
+          row.length >= minItemsPerRow &&
+          (predictedCurrentRowHeight <= maxRowHeightPx || i === visibleTiles.length - 1)
+        )
           break;
 
         row.push({ tile, aspectRatio: ar });
         rowUnits += unit;
         i++;
 
-        if (rowUnits >= TARGET_UNITS_PER_ROW * 0.9 || i === visibleTiles.length)
+        const remaining = visibleTiles.length - i;
+        const aspectSumNow = row.reduce((s, r) => s + r.aspectRatio, 0);
+        const availableWidthNow = containerWidth - gap * (row.length - 1);
+        const predictedRowHeightNow =
+          aspectSumNow > 0 ? availableWidthNow / aspectSumNow : Infinity;
+        const canStopByUnits =
+          rowUnits >= TARGET_UNITS_PER_ROW * 0.9 &&
+          (row.length >= minItemsPerRow || remaining === 0) &&
+          (predictedRowHeightNow <= maxRowHeightPx || remaining === 0);
+
+        if (canStopByUnits || i === visibleTiles.length)
           break;
       }
 
       if (row.length === 0) break;
 
-      const isLastRow = i >= visibleTiles.length;
+      // If row is still too tall, keep adding next items until it drops below cap
+      // (or we run out of images). This ensures the vh threshold is always honored.
+      while (i < visibleTiles.length) {
+        const rowAspectSum = row.reduce((s, r) => s + r.aspectRatio, 0);
+        const rowAvailableWidth = containerWidth - gap * (row.length - 1);
+        const predictedRowHeight =
+          rowAspectSum > 0 ? rowAvailableWidth / rowAspectSum : Infinity;
+
+        if (predictedRowHeight <= maxRowHeightPx) {
+          break;
+        }
+
+        const nextTile = visibleTiles[i];
+        const nextW = parseInt(nextTile.dataset.width);
+        const nextH = parseInt(nextTile.dataset.height);
+        if (!nextW || !nextH) {
+          i++;
+          continue;
+        }
+
+        row.push({ tile: nextTile, aspectRatio: nextW / nextH });
+        i++;
+      }
+
       const totalGapWidth = gap * (row.length - 1);
       const availableWidth = containerWidth - totalGapWidth;
       const aspectSum = row.reduce((s, r) => s + r.aspectRatio, 0);
+      const isLastRow = i >= visibleTiles.length;
 
-      // All rows: calculate rowHeight to fill width exactly
-      // For last row, use same height as previous row for visual consistency
-      let rowHeight;
+      // Always compute row height from available width so each row fills fully.
+      let rowHeight = availableWidth / aspectSum;
       if (isLastRow) {
-        rowHeight = lastRowHeight;
-      } else {
-        rowHeight = availableWidth / aspectSum;
-        lastRowHeight = rowHeight;
+        rowHeight = Math.min(rowHeight, maxRowHeightPx);
       }
 
       row.forEach(({ tile, aspectRatio }) => {
@@ -116,8 +188,11 @@ function initializeJustifiedLayout() {
   observer.observe(gallery, {
     attributes: true,
     attributeFilter: ["style"],
+    childList: true,
     subtree: true,
   });
+
+  gallery.addEventListener("gallery:randomized", layoutGallery);
 }
 
 // Initialize when DOM is ready

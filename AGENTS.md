@@ -24,6 +24,21 @@ Main pages:
 - `contact.html`
 - `footer.html`
 
+Showcase pages:
+
+- `works/photography.html`
+- `works/client-projects.html`
+- `works/process-experiments.html`
+- `works/photos/photos-1.html`
+- `works/photos/photos-2.html`
+- `works/photos/photos-3.html`
+
+Showcase assets:
+
+- `works/images/photos-1/`
+- `works/images/photos-2/`
+- `works/images/photos-3/`
+
 Gallery pages:
 
 - `shop/stickers.html`
@@ -130,6 +145,7 @@ Behavior:
 
 - If pre-rendered tiles exist (`button[data-index]`), it only wires lightbox behavior.
 - If tiles do not exist, it can generate from `config.images` / sequential pattern / explicit file list.
+- Gallery order randomization is runtime-only (client-side) and does not require rebuilding HTML.
 
 Filters:
 
@@ -150,8 +166,19 @@ Lightbox requirements in HTML:
 - close/prev/next buttons
 - slide structure with center/adjacent slide classes
 - optional controls: zoom, transition mode, slideshow
+- page must load `js/gallery.js` and call `initializeGallery(...)` after tiles are present
+
+Important failure mode:
+
+- If gallery tiles render but click-to-open does nothing, first verify the page still has lightbox DOM, then verify `js/gallery.js` is included and `initializeGallery` is called.
 
 If you create a new gallery page and want lightbox support, use the same lightbox DOM structure from existing gallery pages.
+
+Randomization controls:
+
+- A `Randomize Now` button is injected above initialized galleries.
+- A `Randomize on Reload` toggle is injected above initialized galleries.
+- `Randomize on Reload` defaults to off and persists per page/gallery in `localStorage`.
 
 ## 5) Posters Layout Contract (`js/justified-layout.js`)
 
@@ -181,6 +208,9 @@ What build updates:
 - `shop/bookmarks.html`
 - `shop/stickers.html`
 - `shop/posters.html`
+- `works/photos/photos-1.html`
+- `works/photos/photos-2.html`
+- `works/photos/photos-3.html`
 
 Filename parsing assumptions:
 
@@ -197,6 +227,9 @@ Critical: if you change filter markup in pages, also update `generateFilterHtml`
 Known implementation note:
 
 - Bookmark tile generation currently includes `data-width`, `data-height`, and `data-orientation` fields that may be `undefined` because dimensions are not computed there. This is harmless for bookmark rendering but should be cleaned up if strict metadata quality is required.
+
+- Photography gallery generation reads from `works/images/photos-1/`, `works/images/photos-2/`, and `works/images/photos-3/` and rewrites the matching `works/photos/photos-*.html` pages with bordered-off tiles and image metadata.
+- Photography pages must keep their lightbox block and gallery initialization scripts outside the build-replaced tile region so image click behavior is preserved after `node build.js`.
 
 ## 7) Add A New Page (Standard Template)
 
@@ -235,7 +268,12 @@ Use this base:
       <!-- page content -->
     </main>
 
-    <footer id="siteFooter">...</footer>
+    <iframe
+      src="/footer.html"
+      id="footer"
+      title="Footer"
+      style="height: 260px"
+    ></iframe>
 
     <script src="js/disable-contextmenu.js"></script>
     <script src="js/theme.js"></script>
@@ -293,3 +331,22 @@ Entries:
 - `2026-04-14: Centralized footer into shared footer.html iframe and removed inline page footers | files: footer.html, navbar.html, index.html, shop.html, contact.html, showcase.html, shop/bookmarks.html, shop/posters.html, shop/stickers.html, AGENTS.md`
 - `2026-04-14: Matched footer iframe behavior to navbar (full-width, borderless) and added adaptive iframe height | files: css/styles.css, js/theme.js, footer.html, AGENTS.md`
 - `2026-04-14: Synced live theme updates into navbar/footer iframes so footer changes instantly without reload | files: js/theme.js, AGENTS.md`
+- `2026-04-14: Updated Showcase to tile-based navigation and added starter works pages | files: showcase.html, works/featured-designs.html, works/client-projects.html, works/process-experiments.html, AGENTS.md`
+- `2026-04-14: Linked Photography tiles to dedicated borderless justified-layout pages | files: works/featured-designs.html, works/late-winter-morning-walk.html, works/placeholder-project-two.html, works/placeholder-project-three.html, css/styles.css, AGENTS.md`
+- `2026-04-14: Removed sidebar/grid spacing on borderless justified pages so photography layouts span full width | files: css/styles.css, AGENTS.md`
+- `2026-04-14: Added side gutters equal to tile spacing and title/description breathing room on borderless photography pages | files: css/styles.css, works/late-winter-morning-walk.html, works/placeholder-project-two.html, works/placeholder-project-three.html, AGENTS.md`
+- `2026-04-14: Renamed photography pages and folders to photos-* for simpler build/update flow | files: works/photos-1.html, works/photos-2.html, works/photos-3.html, works/images/photos-1/, works/images/photos-2/, works/images/photos-3/, showcase.html, build.js, AGENTS.md`
+- `2026-04-14: Left featured-designs.html as a redirect to photos-1 for legacy URLs | files: works/featured-designs.html, AGENTS.md`
+- `2026-04-14: Reorganized showcase sections and moved photos pages under works/photos/ with updated build paths | files: showcase.html, works/photography.html, works/photos/photos-1.html, works/photos/photos-2.html, works/photos/photos-3.html, works/featured-designs.html, build.js, AGENTS.md`
+- `2026-04-14: Restored photo page click-to-open viewer by adding lightbox DOM and gallery initialization to works/photos pages; documented required lightbox/runtime contract | files: works/photos/photos-1.html, works/photos/photos-2.html, works/photos/photos-3.html, AGENTS.md, README.md, documentation/DEVELOPMENT_GUIDELINES.md`
+- `2026-04-14: Added runtime gallery randomization controls (Randomize Now and Randomize on Reload with saved preference) so image order can shuffle without rebuilding | files: js/gallery.js, css/styles.css, AGENTS.md, README.md, documentation/DEVELOPMENT_GUIDELINES.md`
+- `2026-04-14: Improved photo gallery responsiveness by forcing justified relayout after randomization, refined randomize control styling (button + switch), and increased borderless title/description spacing | files: js/gallery.js, js/justified-layout.js, css/styles.css, AGENTS.md`
+- `2026-04-14: Unified phone and desktop vw-responsive justified layout behavior for poster/photo galleries and removed phone-only fallback overrides | files: js/justified-layout.js, css/styles.css, AGENTS.md`
+- `2026-04-14: Enforced minimum 4 columns per row on large screens for posters page in justified layout packing | files: js/justified-layout.js, AGENTS.md`
+- `2026-04-14: Added viewport-height row cap to justified layout so poster/photo tiles do not render overly tall while preserving responsive packing | files: js/justified-layout.js, AGENTS.md`
+- `2026-04-14: Restored strict full-width row fill in justified layout by removing row-height clamping that introduced right-edge gaps | files: js/justified-layout.js, AGENTS.md`
+- `2026-04-14: Tuned justified row packing to continue adding items when row height exceeds 80vh, keeping full-width fill while reducing oversized rows | files: js/justified-layout.js, AGENTS.md`
+- `2026-04-14: Refined justified row-height threshold to 65vh for poster/photo galleries to reduce oversized rows while preserving full-width fill | files: js/justified-layout.js, AGENTS.md`
+- `2026-04-14: Enforced 65vh row-height cap by appending additional items before row finalize, preventing oversized rows after portrait pairing | files: js/justified-layout.js, AGENTS.md`
+- `2026-04-14: Limited last-row tile height to 65vh in justified layout while keeping non-last rows width-filled | files: js/justified-layout.js, AGENTS.md`
+- `2026-04-14: Increased photos-page title line spacing and reduced description line spacing to match for balanced typography | files: css/styles.css, AGENTS.md`

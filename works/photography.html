@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photography - Various Thingamjigs</title>
+    <script>
+      const saved = localStorage.getItem("theme");
+      if (saved && ["royal", "deep", "dark", "light"].includes(saved)) {
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    </script>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body>
+    <header id="mainHeader">
+      <div class="container">
+        <h1>Various Thingamjigs</h1>
+      </div>
+    </header>
+
+    <iframe
+      src="/navbar.html"
+      id="navbar"
+      title="Navigation"
+      style="height: 48px"
+    ></iframe>
+
+    <main class="container" aria-label="Photography collections">
+      <h1>Photography</h1>
+      <section
+        class="shop-tiles"
+        aria-label="Browse photography collections"
+        id="photography-tiles"
+      >
+        <a class="shop-tile" href="./photos/photos-1.html" aria-label="A Late Winter Morning Walk">
+          <span class="shop-tile__label">A Late Winter Morning Walk</span>
+        </a>
+        <a class="shop-tile" href="./photos/photos-2.html" aria-label="Photos 2">
+          <span class="shop-tile__label">Photos 2</span>
+        </a>
+        <a class="shop-tile" href="./photos/photos-3.html" aria-label="Photos 3">
+          <span class="shop-tile__label">Photos 3</span>
+        </a>
+      </section>
+    </main>
+
+    <iframe
+      src="/footer.html"
+      id="footer"
+      title="Footer"
+      style="height: 260px"
+    ></iframe>
+
+    <script src="../js/disable-contextmenu.js"></script>
+    <script src="../js/theme.js"></script>
+  </body>
+</html>

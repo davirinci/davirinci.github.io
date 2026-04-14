@@ -26,12 +26,15 @@
       style="height: 48px"
     ></iframe>
 
-    <main class="container" aria-label="Showcase">
+    <main class="container" aria-label="Showcase categories">
       <h1>Showcase</h1>
-      <p>
-        Featured work and highlights will be displayed here. Use this page to
-        spotlight selected pieces, collections, and upcoming drops.
-      </p>
+      <section
+        class="shop-tiles"
+        aria-label="Browse showcase sections"
+        id="showcase-tiles"
+      >
+        <!-- Showcase categories will be dynamically generated -->
+      </section>
     </main>
 
     <iframe
@@ -43,5 +46,28 @@
 
     <script src="js/disable-contextmenu.js"></script>
     <script src="js/theme.js"></script>
+    <script>
+      (() => {
+        const showcaseTilesContainer = document.getElementById("showcase-tiles");
+        const categories = [
+          { name: "Photography", path: "photography" },
+          { name: "Client Projects", path: "client-projects" },
+          { name: "Process Experiments", path: "process-experiments" },
+        ];
+
+        categories.forEach((category) => {
+          const tile = document.createElement("a");
+          tile.className = "shop-tile";
+          tile.href = `works/${category.path}.html`;
+
+          const label = document.createElement("span");
+          label.className = "shop-tile__label";
+          label.textContent = category.name;
+
+          tile.appendChild(label);
+          showcaseTilesContainer.appendChild(tile);
+        });
+      })();
+    </script>
   </body>
 </html>

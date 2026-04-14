@@ -747,6 +747,42 @@ main.container {
   color: var(--btn-active-text);
 }
 
+.gallery-randomize-controls {
+  position: fixed;
+  bottom: 28px;
+  right: clamp(16px, 4vw, 48px);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 9998;
+  padding: 0;
+}
+
+.gallery-randomize-controls .gallery-randomize-now {
+  height: 38px;
+  min-height: 38px;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 700;
+  background: var(--btn-bg);
+  border: 2px solid var(--btn-border);
+  color: var(--btn-text);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 150ms ease;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.gallery-randomize-controls .gallery-randomize-now:hover {
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-bg);
+}
+
+
 .square-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(max(160px, 20%), 1fr));
@@ -825,62 +861,8 @@ body:has([aria-label="Print thumbnails"]) .portrait-gallery .portrait-tile {
 body:has([aria-label="Print thumbnails"]) .portrait-gallery .portrait-tile img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
-}
-
-/* Portrait orientation screens */
-@media (max-aspect-ratio: 1/1) {
-  body:has([aria-label="Print thumbnails"])
-    .portrait-gallery
-    .portrait-tile
-    img {
-    height: 30vh;
-  }
-}
-
-/* Short screens */
-@media (max-height: 480px) {
-  body:has([aria-label="Print thumbnails"])
-    .portrait-gallery
-    .portrait-tile
-    img {
-    height: 80vh;
-  }
-}
-
-/* Smaller screens in portrait */
-@media (max-aspect-ratio: 1/1) and (max-width: 480px) {
-  body:has([aria-label="Print thumbnails"]) .portrait-gallery {
-    flex-direction: column;
-  }
-
-  body:has([aria-label="Print thumbnails"]) .portrait-gallery .portrait-tile {
-    width: 100%;
-  }
-
-  body:has([aria-label="Print thumbnails"])
-    .portrait-gallery
-    .portrait-tile
-    img {
-    width: 100%;
-    height: auto;
-    max-height: 75vh;
-  }
-
-  .portrait-tile {
-    width: 100%;
-    aspect-ratio: auto;
-    height: auto;
-  }
-
-  .portrait-tile img {
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    max-height: 75vh;
-    object-fit: contain;
-  }
 }
 
 .portrait-tile {
@@ -912,6 +894,62 @@ body:has([aria-label="Print thumbnails"]) .portrait-gallery .portrait-tile img {
   object-fit: contain;
   display: block;
   background: var(--tile-bg);
+}
+
+body.borderless-justified .portrait-tile,
+body.borderless-justified .portrait-tile:hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+body.borderless-justified .portrait-tile img {
+  background: transparent;
+}
+
+body.borderless-justified .container.gallery-container {
+  width: 100%;
+  padding: 24px 0;
+}
+
+body.borderless-justified .gallery-container #main {
+  width: 100%;
+  padding: 0;
+}
+
+body.borderless-justified .gallery-container h1,
+body.borderless-justified .gallery-container p {
+  padding: 0 clamp(16px, 4vw, 48px);
+}
+
+body.borderless-justified .gallery-container h1 {
+  margin: 0 0 14px 0;
+  line-height: 1.45;
+}
+
+body.borderless-justified .gallery-container p {
+  margin: 0 0 6px 0;
+  max-width: 76ch;
+  line-height: 1.45;
+}
+
+body.borderless-justified:has([aria-label="Print thumbnails"]) .portrait-gallery {
+  padding: 20px clamp(16px, 4vw, 48px) 0;
+}
+
+body.borderless-justified .gallery-container h1 + .portrait-gallery,
+body.borderless-justified .gallery-container p + .portrait-gallery {
+  margin-top: 24px;
+}
+
+@media (min-width: 1200px) {
+  body.borderless-justified .gallery-container #main {
+    display: block;
+    padding: 0;
+  }
+
+  body.borderless-justified .portrait-gallery {
+    grid-column: auto;
+  }
 }
 
 .lightbox {

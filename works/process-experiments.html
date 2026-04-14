@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Process and Experiments - Various Thingamjigs</title>
+    <script>
+      const saved = localStorage.getItem("theme");
+      if (saved && ["royal", "deep", "dark", "light"].includes(saved)) {
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    </script>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body>
+    <header id="mainHeader">
+      <div class="container">
+        <h1>Various Thingamjigs</h1>
+      </div>
+    </header>
+
+    <iframe
+      src="/navbar.html"
+      id="navbar"
+      title="Navigation"
+      style="height: 48px"
+    ></iframe>
+
+    <main class="container" aria-label="Process and experiments">
+      <h1>Process and Experiments</h1>
+      <p>
+        This section will cover behind-the-scenes process notes and visual
+        experiments.
+      </p>
+    </main>
+
+    <iframe
+      src="/footer.html"
+      id="footer"
+      title="Footer"
+      style="height: 260px"
+    ></iframe>
+
+    <script src="../js/disable-contextmenu.js"></script>
+    <script src="../js/theme.js"></script>
+  </body>
+</html>

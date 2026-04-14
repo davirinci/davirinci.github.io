@@ -54,3 +54,23 @@ Grid layout with artist grouping and automatic sorting.
 ### Stickers
 
 Uniform grid layout with sequential ordering.
+
+### Runtime Gallery Randomization
+
+Image order can be randomized in the browser without rebuilding pages.
+
+- `Randomize Now` shuffles the current gallery order immediately.
+- `Randomize on Reload` shuffles automatically each reload.
+- Toggle preference is saved in browser `localStorage` per page/gallery.
+
+### Photography (Showcase)
+
+Borderless justified galleries generated from `works/images/photos-*` into `works/photos/photos-*.html`.
+
+Important runtime requirement for click-to-open single-image view:
+
+- Include lightbox markup (`.lightbox`, `.lightbox__carousel`, controls)
+- Load `js/gallery.js`
+- Call `initializeGallery(".portrait-gallery", ...)` after the page tiles exist
+
+If image tiles are visible but clicking does nothing, one of those three requirements is missing.

@@ -478,6 +478,88 @@ async function updatePostersGallery() {
   }
 }
 
+async function updatePhotographyGallery() {
+  const photographyPages = [
+    {
+      page: path.join(__dirname, "works", "photos", "photos-1.html"),
+      dir: path.join(__dirname, "works", "images", "photos-1"),
+      title: "A Late Winter Morning Walk",
+    },
+    {
+      page: path.join(__dirname, "works", "photos", "photos-2.html"),
+      dir: path.join(__dirname, "works", "images", "photos-2"),
+      title: "Photos 2",
+    },
+    {
+      page: path.join(__dirname, "works", "photos", "photos-3.html"),
+      dir: path.join(__dirname, "works", "images", "photos-3"),
+      title: "Photos 3",
+    },
+  ];
+
+  try {
+    for (const photographyPage of photographyPages) {
+      const files = fs.readdirSync(photographyPage.dir);
+      const webpFiles = files.filter((file) => file.endsWith(".webp")).sort();
+
+      console.log(
+        `Found ${webpFiles.length} photography images for ${path.basename(
+          photographyPage.page
+        )}`
+      );
+
+      const parsedFiles = await Promise.all(
+        webpFiles.map((file) => {
+          const imagePath = path.join(photographyPage.dir, file);
+          try {
+            const metadata = imageSize(imagePath);
+            return {
+              file,
+              width: metadata.width,
+              height: metadata.height,
+              orientation:
+                metadata.width && metadata.height && metadata.width > metadata.height
+                  ? "landscape"
+                  : "portrait",
+            };
+          } catch (error) {
+            console.warn(`Could not read dimensions for ${file}, skipping`);
+            return null;
+          }
+        })
+      );
+
+      const validParsedFiles = parsedFiles.filter((file) => file !== null);
+
+      let htmlContent = fs.readFileSync(photographyPage.page, "utf8");
+
+      const galleryItemsHtml = validParsedFiles
+        .map(
+          (item, idx) =>
+            `<button class="portrait-tile" data-index="${idx}" data-width="${item.width}" data-height="${item.height}" data-orientation="${item.orientation}" style="aspect-ratio: ${item.width} / ${item.height};">
+        <img src="../images/${path.basename(photographyPage.dir)}/${item.file}" alt="${photographyPage.title} photo ${idx + 1}">
+      </button>`
+        )
+        .join("\n          ");
+
+      const titleRegex = new RegExp(
+        `(<h1>${photographyPage.title}<\\/h1>[\\s\\S]*?<div class="portrait-gallery" aria-label="Print thumbnails">)[\\s\\S]*?(<\\/div>)`
+      );
+      const newContent = `$1\n          ${galleryItemsHtml}\n        $2`;
+      htmlContent = htmlContent.replace(titleRegex, newContent);
+
+      fs.writeFileSync(photographyPage.page, htmlContent, "utf8");
+
+      console.log(
+        `✅ Updated ${path.basename(photographyPage.page)} with photography metadata`
+      );
+    }
+  } catch (error) {
+    console.error("❌ Error updating photography galleries:", error.message);
+    process.exit(1);
+  }
+}
+
 // Run all updates
 (async function main() {
   console.log("🔄 Updating galleries...\n");
@@ -487,6 +569,8 @@ async function updatePostersGallery() {
   updateStickersGallery();
   console.log("");
   await updatePostersGallery();
+  console.log("");
+  await updatePhotographyGallery();
 
   console.log("\n🎉 All galleries updated successfully!");
   console.log("Run this script again whenever you add new images.");

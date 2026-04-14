@@ -14,7 +14,12 @@ function initializeGallery(gallerySelector, config) {
   const existingTiles = gallery.querySelectorAll("button[data-index]");
   if (existingTiles.length > 0) {
     // Tiles already exist - just set up lightbox functionality
-    const tiles = Array.from(existingTiles);
+    let tiles = Array.from(existingTiles);
+
+    attachRandomizeControls(gallery, () => {
+      tiles = randomizeTiles(gallery, tiles);
+    });
+
     const lightbox = document.querySelector(".lightbox");
     if (!lightbox) return;
 
@@ -66,11 +71,79 @@ function initializeGallery(gallerySelector, config) {
     gallery.appendChild(btn);
   });
 
-  const tiles = Array.from(gallery.querySelectorAll("button[data-index]"));
+  let tiles = Array.from(gallery.querySelectorAll("button[data-index]"));
+
+  attachRandomizeControls(gallery, () => {
+    tiles = randomizeTiles(gallery, tiles);
+  });
+
   const lightbox = document.querySelector(".lightbox");
   if (!lightbox) return;
 
   attachLightboxHandlers(gallery, tiles, lightbox, imageSources);
+}
+
+function getRandomizeStorageKey(gallerySelector, gallery) {
+  const galleryId = gallery.id || gallery.getAttribute("aria-label") || gallerySelector;
+  return `gallery-randomize-on-reload:${window.location.pathname}:${galleryId}`;
+}
+
+function getRandomizeOnReloadPreference(storageKey) {
+  try {
+    return localStorage.getItem(storageKey) === "true";
+  } catch (error) {
+    return false;
+  }
+}
+
+function setRandomizeOnReloadPreference(storageKey, enabled) {
+  try {
+    localStorage.setItem(storageKey, enabled ? "true" : "false");
+  } catch (error) {
+    // Ignore storage errors (private mode, denied access, etc.)
+  }
+}
+
+function randomizeTiles(gallery, tiles) {
+  const shuffled = [...tiles];
+
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  shuffled.forEach((tile, index) => {
+    tile.dataset.index = String(index);
+    gallery.appendChild(tile);
+  });
+
+  gallery.dispatchEvent(new CustomEvent("gallery:randomized"));
+
+  return shuffled;
+}
+
+function attachRandomizeControls(gallery, onRandomizeNow) {
+  if (
+    gallery.previousElementSibling &&
+    gallery.previousElementSibling.classList.contains("gallery-randomize-controls")
+  ) {
+    return;
+  }
+
+  const controls = document.createElement("div");
+  controls.className = "gallery-randomize-controls";
+
+  const randomizeBtn = document.createElement("button");
+  randomizeBtn.type = "button";
+  randomizeBtn.className = "gallery-randomize-now";
+  randomizeBtn.textContent = "Randomize";
+
+  controls.appendChild(randomizeBtn);
+  gallery.parentElement.insertBefore(controls, gallery);
+
+  randomizeBtn.addEventListener("click", () => {
+    onRandomizeNow();
+  });
 }
 
 /**
@@ -94,9 +167,11 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
   let isSlideshowActive = false;
   let transitionMode = 0; // 0 = fade, 1 = movement
 
+  let orderedTiles = [...tiles];
+
   function getVisibleSources() {
     // Get only visible tiles and their image sources
-    const visibleTiles = tiles.filter((tile) => tile.style.display !== "none");
+    const visibleTiles = orderedTiles.filter((tile) => tile.style.display !== "none");
     return visibleTiles
       .map((tile) => {
         const img = tile.querySelector("img");
@@ -180,7 +255,7 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
     visibleSources = getVisibleSources();
 
     // Find the index of the clicked tile within visible tiles
-    const visibleTiles = tiles.filter((tile) => tile.style.display !== "none");
+    const visibleTiles = orderedTiles.filter((tile) => tile.style.display !== "none");
     currentIndex = visibleTiles.indexOf(clickedTile);
 
     if (currentIndex === -1) return; // Shouldn't happen, but safety check
@@ -278,11 +353,24 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
     }
   }
 
-  tiles.forEach((tile) => {
+  orderedTiles.forEach((tile) => {
     tile.addEventListener("click", () => {
       openLightbox(tile);
     });
   });
+
+  const randomizeNowButton = gallery.parentElement?.querySelector(
+    ".gallery-randomize-now"
+  );
+  if (randomizeNowButton) {
+    randomizeNowButton.addEventListener("click", () => {
+      orderedTiles = Array.from(gallery.querySelectorAll("button[data-index]"));
+
+      if (lightbox.dataset.active === "true") {
+        closeLightbox();
+      }
+    });
+  }
 
   // Prevent dragging on lightbox images
   carousel.querySelectorAll("img").forEach((img) => {

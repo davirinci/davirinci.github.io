@@ -319,6 +319,24 @@ Every page must include these scripts **in order** at the end of `<body>`:
 1. **disable-contextmenu.js** - Disables right-click context menu
 2. **theme.js** - Manages theme switching and persistence
 
+### Gallery Pages (Required for Click-to-Open)
+
+Any page that should open a single-image viewer when a tile is clicked must include all of the following:
+
+1. Lightbox DOM markup (`.lightbox`, `.lightbox__carousel`, nav/close controls, slide elements)
+2. Gallery runtime script include (`js/gallery.js` with correct relative path)
+3. An `initializeGallery(".portrait-gallery", config)` or `initializeGallery(".square-gallery", config)` call after tiles are present
+
+If gallery tiles render but clicks do nothing, first check those three requirements.
+
+### Gallery Randomization (No Rebuild Needed)
+
+Gallery tile order can be randomized entirely on the client side via `js/gallery.js`.
+
+- Use `Randomize Now` to shuffle instantly.
+- Use `Randomize on Reload` to shuffle on every page reload.
+- `Randomize on Reload` is off by default and the user choice is persisted in `localStorage`.
+
 ### Custom JavaScript
 
 If adding custom JavaScript:
