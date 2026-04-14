@@ -782,7 +782,6 @@ main.container {
   border-color: var(--btn-hover-bg);
 }
 
-
 .square-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(max(160px, 20%), 1fr));
@@ -932,7 +931,8 @@ body.borderless-justified .gallery-container p {
   line-height: 1.45;
 }
 
-body.borderless-justified:has([aria-label="Print thumbnails"]) .portrait-gallery {
+body.borderless-justified:has([aria-label="Print thumbnails"])
+  .portrait-gallery {
   padding: 20px clamp(16px, 4vw, 48px) 0;
 }
 

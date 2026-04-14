@@ -50,8 +50,8 @@ function initializeGallery(gallerySelector, config) {
       (_, i) =>
         `${config.directory}/${config.pattern.replace(
           "{n}",
-          String(i + 1).padStart(3, "0")
-        )}`
+          String(i + 1).padStart(3, "0"),
+        )}`,
     );
   } else if (config.directory && config.files) {
     // Explicit list of filenames
@@ -84,7 +84,8 @@ function initializeGallery(gallerySelector, config) {
 }
 
 function getRandomizeStorageKey(gallerySelector, gallery) {
-  const galleryId = gallery.id || gallery.getAttribute("aria-label") || gallerySelector;
+  const galleryId =
+    gallery.id || gallery.getAttribute("aria-label") || gallerySelector;
   return `gallery-randomize-on-reload:${window.location.pathname}:${galleryId}`;
 }
 
@@ -125,7 +126,9 @@ function randomizeTiles(gallery, tiles) {
 function attachRandomizeControls(gallery, onRandomizeNow) {
   if (
     gallery.previousElementSibling &&
-    gallery.previousElementSibling.classList.contains("gallery-randomize-controls")
+    gallery.previousElementSibling.classList.contains(
+      "gallery-randomize-controls",
+    )
   ) {
     return;
   }
@@ -171,7 +174,9 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
 
   function getVisibleSources() {
     // Get only visible tiles and their image sources
-    const visibleTiles = orderedTiles.filter((tile) => tile.style.display !== "none");
+    const visibleTiles = orderedTiles.filter(
+      (tile) => tile.style.display !== "none",
+    );
     return visibleTiles
       .map((tile) => {
         const img = tile.querySelector("img");
@@ -255,7 +260,9 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
     visibleSources = getVisibleSources();
 
     // Find the index of the clicked tile within visible tiles
-    const visibleTiles = orderedTiles.filter((tile) => tile.style.display !== "none");
+    const visibleTiles = orderedTiles.filter(
+      (tile) => tile.style.display !== "none",
+    );
     currentIndex = visibleTiles.indexOf(clickedTile);
 
     if (currentIndex === -1) return; // Shouldn't happen, but safety check
@@ -360,7 +367,7 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
   });
 
   const randomizeNowButton = gallery.parentElement?.querySelector(
-    ".gallery-randomize-now"
+    ".gallery-randomize-now",
   );
   if (randomizeNowButton) {
     randomizeNowButton.addEventListener("click", () => {
@@ -396,7 +403,7 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
         panStartY = e.touches[0].clientY;
         img.style.transition = "none";
       },
-      { passive: false }
+      { passive: false },
     );
   });
 
@@ -433,7 +440,7 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
 
       centerImg.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`;
     },
-    { passive: false }
+    { passive: false },
   );
 
   document.addEventListener("mouseup", () => {
@@ -555,7 +562,7 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
       transitionBtn.textContent = transitionMode === 0 ? "⟺" : "◜◝";
       transitionBtn.setAttribute(
         "aria-label",
-        transitionMode === 0 ? "Fade transition" : "Movement transition"
+        transitionMode === 0 ? "Fade transition" : "Movement transition",
       );
     });
   }
@@ -607,7 +614,7 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
       isDragging = true;
       carousel.style.transition = "none";
     },
-    { passive: true }
+    { passive: true },
   );
 
   lightbox.addEventListener(
@@ -624,7 +631,7 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
         carousel.style.transform = `translateX(${deltaX}px)`;
       }
     },
-    { passive: true }
+    { passive: true },
   );
 
   lightbox.addEventListener(
@@ -637,7 +644,7 @@ function attachLightboxHandlers(gallery, tiles, lightbox, imageSources) {
       carousel.style.transform = "translateX(0)";
       handleSwipe();
     },
-    { passive: true }
+    { passive: true },
   );
 
   function handleSwipe() {
@@ -698,10 +705,10 @@ function initializeGalleryFilters() {
  */
 function applyGalleryFilters() {
   const activeTypeBtn = document.querySelector(
-    '.filter-btn[data-filter-group="type"].active'
+    '.filter-btn[data-filter-group="type"].active',
   );
   const activeTopicBtn = document.querySelector(
-    '.filter-btn[data-filter-group="topic"].active'
+    '.filter-btn[data-filter-group="topic"].active',
   );
 
   let selectedType = (activeTypeBtn?.dataset.filterType || "all").toLowerCase();
@@ -720,7 +727,7 @@ function applyGalleryFilters() {
 
   // Select both portrait and square tiles
   const tiles = document.querySelectorAll(
-    ".portrait-gallery [data-type], .square-gallery [data-type]"
+    ".portrait-gallery [data-type], .square-gallery [data-type]",
   );
 
   tiles.forEach((tile) => {
@@ -749,7 +756,7 @@ function applyGalleryFilters() {
   const isSidebarLayout = window.matchMedia("(min-width: 1200px)").matches;
   if (!isSidebarLayout) {
     const gallery = document.querySelector(
-      ".portrait-gallery, .square-gallery"
+      ".portrait-gallery, .square-gallery",
     );
     if (gallery) {
       // Small delay to ensure layout is updated

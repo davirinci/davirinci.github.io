@@ -1,7 +1,7 @@
 // Justified gallery layout - calculates row heights to fill full width
 function initializeJustifiedLayout() {
   const gallery = document.querySelector(
-    '.portrait-gallery[aria-label="Print thumbnails"]'
+    '.portrait-gallery[aria-label="Print thumbnails"]',
   );
   if (!gallery) return;
   const isPosterPage = window.location.pathname.includes("/shop/posters");
@@ -38,8 +38,7 @@ function initializeJustifiedLayout() {
 
     const PORTRAIT_UNIT = 1.0;
     const LANDSCAPE_UNIT = 1.6;
-    const minItemsPerRow =
-      isPosterPage && containerWidth >= 1200 ? 4 : 1;
+    const minItemsPerRow = isPosterPage && containerWidth >= 1200 ? 4 : 1;
     const maxRowHeightPx = window.innerHeight * 0.65;
 
     let i = 0;
@@ -100,7 +99,8 @@ function initializeJustifiedLayout() {
           row.length > 0 &&
           rowUnits + unit > TARGET_UNITS_PER_ROW * 1.2 &&
           row.length >= minItemsPerRow &&
-          (predictedCurrentRowHeight <= maxRowHeightPx || i === visibleTiles.length - 1)
+          (predictedCurrentRowHeight <= maxRowHeightPx ||
+            i === visibleTiles.length - 1)
         )
           break;
 
@@ -118,8 +118,7 @@ function initializeJustifiedLayout() {
           (row.length >= minItemsPerRow || remaining === 0) &&
           (predictedRowHeightNow <= maxRowHeightPx || remaining === 0);
 
-        if (canStopByUnits || i === visibleTiles.length)
-          break;
+        if (canStopByUnits || i === visibleTiles.length) break;
       }
 
       if (row.length === 0) break;

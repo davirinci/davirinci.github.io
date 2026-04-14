@@ -100,14 +100,14 @@ function updateBookmarksGallery() {
           }" data-topic="${item.topicRaw}" data-oc="${
             item.isOc ? "true" : "false"
           }" data-search-terms="${item.searchTerms.join(
-            " "
+            " ",
           )}" data-orientation="${item.orientation}" data-width="${
             item.width
           }" data-height="${item.height}" style="aspect-ratio: ${
             item.width
           } / ${item.height};">
         <img src="./images/bookmarks/${item.file}" alt="${item.topic}">
-      </button>`
+      </button>`,
       )
       .join("\n        ");
 
@@ -234,7 +234,7 @@ function generateGalleryJsConfigForGallery(
   parsedFiles,
   types,
   topics,
-  galleryType
+  galleryType,
 ) {
   const galleryClass =
     galleryType === "stickers" ? ".square-gallery" : ".portrait-gallery";
@@ -262,7 +262,7 @@ function generateCategorizedGalleryHtml(categories, sortedCategories) {
 
     // Sort albums within category
     const sortedAlbums = categories[category].sort((a, b) =>
-      a.album.localeCompare(b.album)
+      a.album.localeCompare(b.album),
     );
 
     sortedAlbums.forEach((item, albumIndex) => {
@@ -284,7 +284,7 @@ function generateCategorizedJsConfig(categories, sortedCategories) {
     const galleryId = `gallery-${catIndex}`;
     const albums = categories[category].map((item) => item.album);
     const images = categories[category].map(
-      (item) => `./images/bookmarks/${item.file}`
+      (item) => `./images/bookmarks/${item.file}`,
     );
 
     jsCode += `
@@ -342,7 +342,7 @@ function updateStickersGallery() {
             item.isOc ? "true" : "false"
           }" data-search-terms="${item.searchTerms.join(" ")}">
         <img src="./images/stickers/${item.file}" alt="${item.topic}">
-      </button>`
+      </button>`,
       )
       .join("\n        ");
 
@@ -357,7 +357,7 @@ function updateStickersGallery() {
       parsedFiles,
       types,
       topics,
-      "stickers"
+      "stickers",
     );
 
     // Replace the script content
@@ -406,7 +406,7 @@ async function updatePostersGallery() {
           parsed.aspectRatio = aspectRatio;
         } catch (err) {
           console.warn(
-            `Could not read dimensions for ${f}, defaulting to 2:3 portrait`
+            `Could not read dimensions for ${f}, defaulting to 2:3 portrait`,
           );
           parsed.orientation = "portrait";
           parsed.width = 2;
@@ -414,7 +414,7 @@ async function updatePostersGallery() {
           parsed.aspectRatio = 2 / 3;
         }
         return parsed;
-      })
+      }),
     );
 
     const validParsedFiles = parsedFiles.filter((p) => p !== null);
@@ -440,7 +440,7 @@ async function updatePostersGallery() {
         }" data-topic="${item.topicRaw}" data-oc="${
           item.isOc ? "true" : "false"
         }" data-search-terms="${item.searchTerms.join(
-          " "
+          " ",
         )}" data-orientation="${item.orientation}" data-width="${
           item.width
         }" data-height="${item.height}">
@@ -460,7 +460,7 @@ async function updatePostersGallery() {
       parsedFiles,
       types,
       topics,
-      "posters"
+      "posters",
     );
 
     // Replace the script content
@@ -504,8 +504,8 @@ async function updatePhotographyGallery() {
 
       console.log(
         `Found ${webpFiles.length} photography images for ${path.basename(
-          photographyPage.page
-        )}`
+          photographyPage.page,
+        )}`,
       );
 
       const parsedFiles = await Promise.all(
@@ -518,7 +518,9 @@ async function updatePhotographyGallery() {
               width: metadata.width,
               height: metadata.height,
               orientation:
-                metadata.width && metadata.height && metadata.width > metadata.height
+                metadata.width &&
+                metadata.height &&
+                metadata.width > metadata.height
                   ? "landscape"
                   : "portrait",
             };
@@ -526,7 +528,7 @@ async function updatePhotographyGallery() {
             console.warn(`Could not read dimensions for ${file}, skipping`);
             return null;
           }
-        })
+        }),
       );
 
       const validParsedFiles = parsedFiles.filter((file) => file !== null);
@@ -538,12 +540,12 @@ async function updatePhotographyGallery() {
           (item, idx) =>
             `<button class="portrait-tile" data-index="${idx}" data-width="${item.width}" data-height="${item.height}" data-orientation="${item.orientation}" style="aspect-ratio: ${item.width} / ${item.height};">
         <img src="../images/${path.basename(photographyPage.dir)}/${item.file}" alt="${photographyPage.title} photo ${idx + 1}">
-      </button>`
+      </button>`,
         )
         .join("\n          ");
 
       const titleRegex = new RegExp(
-        `(<h1>${photographyPage.title}<\\/h1>[\\s\\S]*?<div class="portrait-gallery" aria-label="Print thumbnails">)[\\s\\S]*?(<\\/div>)`
+        `(<h1>${photographyPage.title}<\\/h1>[\\s\\S]*?<div class="portrait-gallery" aria-label="Print thumbnails">)[\\s\\S]*?(<\\/div>)`,
       );
       const newContent = `$1\n          ${galleryItemsHtml}\n        $2`;
       htmlContent = htmlContent.replace(titleRegex, newContent);
@@ -551,7 +553,7 @@ async function updatePhotographyGallery() {
       fs.writeFileSync(photographyPage.page, htmlContent, "utf8");
 
       console.log(
-        `✅ Updated ${path.basename(photographyPage.page)} with photography metadata`
+        `✅ Updated ${path.basename(photographyPage.page)} with photography metadata`,
       );
     }
   } catch (error) {

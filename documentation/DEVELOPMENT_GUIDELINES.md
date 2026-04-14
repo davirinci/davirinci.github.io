@@ -107,7 +107,6 @@ Nested pages live in subdirectories and follow this structure:
 ### Key Template Elements
 
 1. **DOCTYPE & Language**
-
    - Always use `<!DOCTYPE html>` and `lang="en"`
 
 2. **Meta Tags** (Required)
@@ -118,7 +117,6 @@ Nested pages live in subdirectories and follow this structure:
    ```
 
 3. **Title Format**
-
    - Root pages: `Page Title – Various Thingamjigs`
    - Nested pages: `Page Title – Various Thingamjigs`
    - Use en-dash (–) separator
@@ -142,6 +140,7 @@ Nested pages live in subdirectories and follow this structure:
      style="height: 48px"
    ></iframe>
    ```
+
    - Must have `id="navbar"` and `title="Navigation"` for accessibility
    - Fixed height of `48px` - **do not change without updating CSS**
    - Always use absolute path `/navbar.html` (works from any directory)
@@ -354,24 +353,20 @@ If adding custom JavaScript:
 ### HTML Structure Best Practices
 
 1. **Semantic HTML**
-
    - Use `<header>`, `<main>`, `<section>`, `<nav>` appropriately
    - Avoid using `<div>` for semantic content
 
 2. **Headings**
-
    - Start with `<h1>` for page title
    - Use proper heading hierarchy (`<h2>`, `<h3>`, etc.)
    - Do not skip heading levels
 
 3. **ARIA Labels**
-
    - Use `aria-label` on interactive elements without visible text
    - Example from navbar: `aria-label="Toggle theme"`
    - Use `aria-current="page"` on active navigation links
 
 4. **Images**
-
    - Always include `alt` attribute
    - Describe content, not just "image"
    - Example: `alt="Gallery of autumn landscape photos"`
