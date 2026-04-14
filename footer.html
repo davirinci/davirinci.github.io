@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      const saved = localStorage.getItem("theme");
+      if (saved && ["royal", "deep", "dark", "light"].includes(saved)) {
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    </script>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <footer id="siteFooter">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <h3>Various Thingamjigs</h3>
+          <p>Art, prints, stickers, and more.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Site Map</h4>
+          <ul>
+            <li><a href="/" target="_parent">Home</a></li>
+            <li><a href="/shop.html" target="_parent">Shop</a></li>
+            <li><a href="/showcase.html" target="_parent">Showcase</a></li>
+            <li><a href="/contact.html" target="_parent">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-shop">
+          <h4>Shop Categories</h4>
+          <ul>
+            <li><a href="/shop/stickers.html" target="_parent">Stickers</a></li>
+            <li>
+              <a href="/shop/bookmarks.html" target="_parent">Bookmarks</a>
+            </li>
+            <li><a href="/shop/posters.html" target="_parent">Posters</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function () {
+        function notifyParentSize() {
+          const height = Math.max(
+            document.documentElement.scrollHeight,
+            document.body.scrollHeight,
+          );
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage(
+              { type: "footer:resize", height },
+              window.location.origin,
+            );
+          }
+        }
+
+        window.addEventListener("load", notifyParentSize);
+        window.addEventListener("resize", notifyParentSize);
+        setTimeout(notifyParentSize, 0);
+      })();
+    </script>
+  </body>
+</html>

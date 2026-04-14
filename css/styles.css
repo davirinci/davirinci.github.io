@@ -93,6 +93,16 @@ body {
   color: var(--text);
 }
 
+body,
+#mainHeader,
+#mainNav,
+#siteFooter {
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
 /* Responsive iframe styling */
 #navbar {
   display: block;
@@ -105,6 +115,15 @@ body {
   top: 0;
   z-index: 1200;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+#footer {
+  display: block;
+  width: 100%;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: transparent;
 }
 
 .container {
@@ -495,7 +514,10 @@ main.container {
   aspect-ratio: 1 / 1;
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-  transition: transform 180ms ease, opacity 180ms ease, box-shadow 180ms ease,
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease,
+    box-shadow 180ms ease,
     border-color 180ms ease;
 }
 
@@ -758,7 +780,9 @@ main.container {
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  transition: transform 180ms ease, opacity 180ms ease;
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
 }
 
 .square-tile:hover {
@@ -868,7 +892,10 @@ body:has([aria-label="Print thumbnails"]) .portrait-gallery .portrait-tile img {
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  transition: transform 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease,
+    box-shadow 180ms ease;
   /* Slightly subtler shadow for a more filled, edge-to-edge look */
   box-shadow: var(--tile-shadow);
 }
@@ -940,7 +967,9 @@ body.lightbox-open #mainHeader {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 300ms ease, opacity 300ms ease;
+  transition:
+    transform 300ms ease,
+    opacity 300ms ease;
   flex: 0 1 auto;
   max-height: 100%;
   background: #000;
@@ -971,7 +1000,9 @@ body.lightbox-open #mainHeader {
 .lightbox__slide--next-1 img {
   opacity: 0.6;
   filter: grayscale(50%);
-  transition: opacity 200ms ease, filter 200ms ease;
+  transition:
+    opacity 200ms ease,
+    filter 200ms ease;
 }
 
 .lightbox__slide--prev-1:hover,
@@ -999,7 +1030,9 @@ body.lightbox-open #mainHeader {
 .lightbox__slide--next-2 img {
   opacity: 0.6;
   filter: grayscale(50%);
-  transition: opacity 200ms ease, filter 200ms ease;
+  transition:
+    opacity 200ms ease,
+    filter 200ms ease;
 }
 
 .lightbox__slide--prev-2:hover img,
@@ -1046,7 +1079,9 @@ body.lightbox-open #mainHeader {
   height: 48px;
   border-radius: 50%;
   cursor: pointer;
-  transition: background 200ms ease, transform 150ms ease;
+  transition:
+    background 200ms ease,
+    transform 150ms ease;
   -webkit-tap-highlight-color: transparent;
   z-index: 20;
 }
@@ -1071,7 +1106,9 @@ body.lightbox-open #mainHeader {
   cursor: pointer;
   display: grid;
   place-items: center;
-  transition: background 200ms ease, transform 150ms ease;
+  transition:
+    background 200ms ease,
+    transform 150ms ease;
   -webkit-tap-highlight-color: transparent;
   z-index: 10;
 }
@@ -1117,7 +1154,9 @@ body.lightbox-open #mainHeader {
   cursor: pointer;
   display: grid;
   place-items: center;
-  transition: background 200ms ease, transform 150ms ease;
+  transition:
+    background 200ms ease,
+    transform 150ms ease;
   -webkit-tap-highlight-color: transparent;
 }
 

@@ -2,6 +2,34 @@
 (function () {
   const THEMES = ["royal", "deep", "dark", "light"];
 
+  function resizeFooterIframe(height) {
+    const footerIframe = document.getElementById("footer");
+    if (!footerIframe) return;
+    const h = Math.max(180, Number(height) || 0);
+    if (h > 0) {
+      footerIframe.style.height = `${h}px`;
+    }
+  }
+
+  function measureAndResizeFooterIframe() {
+    const footerIframe = document.getElementById("footer");
+    if (!footerIframe) return;
+
+    try {
+      const doc =
+        footerIframe.contentDocument || footerIframe.contentWindow?.document;
+      if (!doc) return;
+
+      const height = Math.max(
+        doc.documentElement?.scrollHeight || 0,
+        doc.body?.scrollHeight || 0,
+      );
+      resizeFooterIframe(height);
+    } catch (e) {
+      // Cross-origin restrictions should not apply for this site, but fail quietly.
+    }
+  }
+
   function applyThemeToDocument(doc, theme) {
     if (!doc) return;
     if (doc.documentElement) {
@@ -12,16 +40,34 @@
     }
   }
 
+  function applyThemeToEmbeddedIframes(hostDoc, theme) {
+    if (!hostDoc) return;
+
+    ["navbar", "footer"].forEach((id) => {
+      try {
+        const iframe = hostDoc.getElementById(id);
+        if (!iframe) return;
+        const iframeDoc =
+          iframe.contentDocument || iframe.contentWindow?.document;
+        applyThemeToDocument(iframeDoc, theme);
+      } catch (e) {
+        // Ignore iframe access issues silently.
+      }
+    });
+  }
+
   function setTheme(theme) {
     if (!THEMES.includes(theme)) return;
 
     // Apply to current document
     applyThemeToDocument(document, theme);
+    applyThemeToEmbeddedIframes(document, theme);
 
     // Also update parent window if in iframe
     try {
       if (window.parent && window.parent !== window) {
         applyThemeToDocument(window.parent.document, theme);
+        applyThemeToEmbeddedIframes(window.parent.document, theme);
       }
     } catch (e) {
       // Cross-origin iframe, silently fail
@@ -60,6 +106,15 @@
     }
   });
 
+  window.addEventListener("message", function (event) {
+    if (!event.data || event.data.type !== "footer:resize") return;
+    resizeFooterIframe(event.data.height);
+  });
+
+  window.addEventListener("resize", function () {
+    measureAndResizeFooterIframe();
+  });
+
   document.addEventListener("DOMContentLoaded", function () {
     const saved = localStorage.getItem("theme");
     const initial = saved && THEMES.includes(saved) ? saved : "royal";
@@ -69,6 +124,12 @@
     if (btn) {
       updateToggleLabel(btn);
       btn.addEventListener("click", toggleTheme);
+    }
+
+    const footerIframe = document.getElementById("footer");
+    if (footerIframe) {
+      footerIframe.addEventListener("load", measureAndResizeFooterIframe);
+      setTimeout(measureAndResizeFooterIframe, 100);
     }
   });
 })();

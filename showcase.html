@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Showcase - Various Thingamjigs</title>
+    <script>
+      const saved = localStorage.getItem("theme");
+      if (saved && ["royal", "deep", "dark", "light"].includes(saved)) {
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header id="mainHeader">
+      <div class="container">
+        <h1>Various Thingamjigs</h1>
+      </div>
+    </header>
+
+    <iframe
+      src="/navbar.html"
+      id="navbar"
+      title="Navigation"
+      style="height: 48px"
+    ></iframe>
+
+    <main class="container" aria-label="Showcase">
+      <h1>Showcase</h1>
+      <p>
+        Featured work and highlights will be displayed here. Use this page to
+        spotlight selected pieces, collections, and upcoming drops.
+      </p>
+    </main>
+
+    <iframe
+      src="/footer.html"
+      id="footer"
+      title="Footer"
+      style="height: 260px"
+    ></iframe>
+
+    <script src="js/disable-contextmenu.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>
